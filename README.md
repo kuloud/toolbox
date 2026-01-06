@@ -1,71 +1,161 @@
-# toolbox README
+# Dev Toolbox
 
-This is the README for your extension "toolbox". After writing up a brief description, we recommend including the following sections.
+A comprehensive Visual Studio Code extension providing essential developer tools directly within your editor. Streamline your workflow with built-in utilities for format conversion, time formatting, encoding/decoding, and more - all without leaving your coding environment.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+🔄 Format Conversion
 
-For example if there is an image subfolder under your extension project workspace:
+• JSON ↔ YAML: Seamlessly convert between JSON and YAML formats
 
-\!\[feature X\]\(images/feature-x.png\)
+• XML ↔ JSON: Transform XML data structures to JSON and vice versa  
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+• CSV ↔ JSON: Convert tabular CSV data to JSON arrays and back
+
+• Base64 Encoding/Decoding: Quick encode and decode operations for strings and files
+
+⏰ Time Utilities
+
+• Timestamp Conversion: Convert between Unix timestamps and human-readable dates
+
+• Timezone Handling: Convert times across different timezones
+
+• Date Formatting: Multiple preset formats and custom date string manipulation
+
+• Time Calculations: Add/subtract time units from dates
+
+🔐 Encoding & Cryptography
+
+• Hash Generation: MD5, SHA1, SHA256, SHA512 hash generation
+
+• URL Encoding: Encode and decode URL components
+
+• HTML Entity Encoding: Convert special characters to HTML entities
+
+• JWT Decoder: Parse and validate JSON Web Tokens
+
+📊 Developer Tools
+
+• Color Converter: RGB, HEX, HSL color code conversions
+
+• Regex Tester: Test and debug regular expressions with live feedback
+
+• UUID Generator: Generate RFC-compliant UUIDs (v1, v4, v5)
+
+• Lorem Ipsum Generator: Generate placeholder text for mockups
+
+🌐 Network Utilities
+
+• CORS Tester: Test Cross-Origin Resource Sharing configurations
+
+• HTTP Headers Analyzer: Parse and analyze HTTP response headers
+
+• API Response Formatter: Beautify and format API responses
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+No additional dependencies required. The extension works out-of-the-box with Visual Studio Code version 1.74.0 or higher.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+Setting Description Default
+
+toolbox.autoFormatOnPaste Automatically format pasted content when applicable false
+
+toolbox.defaultDateFormat Default date format for time utilities "YYYY-MM-DD HH:mm:ss"
+
+toolbox.showInStatusBar Show quick access button in status bar true
+
+toolbox.theme UI theme preference ("light", "dark", "auto") "auto"
+
+## Commands
+
+Access all tools through the Command Palette (Ctrl+Shift+P or Cmd+Shift+P):
+
+Command Description
+
+Dev Toolbox: Show Main Panel Open the main toolbox interface
+
+Dev Toolbox: Format Converter Access format conversion tools
+
+Dev Toolbox: Time Utilities Open time and date manipulation tools
+
+Dev Toolbox: Encoding Tools Access encoding and cryptography utilities
+
+Dev Toolbox: Developer Tools Open developer-specific utilities
+
+Dev Toolbox: Network Tools Access network diagnostic tools
+
+## Usage Examples
+
+JSON to YAML Conversion
+
+1. Open command palette and select Dev Toolbox: Format Converter
+2. Choose "JSON to YAML"
+3. Paste your JSON data or load from file
+4. Click "Convert" to get formatted YAML output
+
+Timestamp Conversion
+
+1. Use Dev Toolbox: Time Utilities
+2. Select "Timestamp Converter"
+3. Enter either timestamp or date to convert bidirectionally
+4. Copy result with one click
+
+Regex Testing
+
+1. Open Dev Toolbox: Developer Tools → "Regex Tester"
+2. Enter your regex pattern and test string
+3. See matches highlighted in real-time
+4. Get detailed match information and groups
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+• Large file processing (>10MB) may cause performance delays
+
+• Some complex nested JSON structures might require manual formatting after conversion
+
+• Timezone calculations assume system timezone when not specified
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+0.0.1
 
-### 1.0.0
+Initial release featuring:
+• Core extension framework
 
-Initial release of ...
+• Basic extension structure and configuration
 
-### 1.0.1
+• Hello world functionality
 
-Fixed issue #.
+## Contributing
 
-### 1.1.0
+Currently, this is a private project and external contributions are not accepted. For internal team contributions, please follow the established development workflow.
 
-Added features X, Y, and Z.
+## License
 
----
+This project is licensed under a Private License. All rights reserved.
 
-## Following extension guidelines
+This is proprietary software owned by the project maintainers. No part of this software may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the owner, except in cases where such copying is expressly permitted by applicable law.
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+For licensing inquiries, please contact: mailto:kuloud@outlook.com
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+## Acknowledgments
 
-## Working with Markdown
+• Inspired by popular online developer tools
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+• Built with TypeScript and VS Code Extension API
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+• Thanks to all contributors who help improve this extension
 
-## For more information
+## Support
 
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+• Report issues: https://github.com/kuloud/toolbox/issues
 
-**Enjoy!**
+• Feature requests: https://github.com/kuloud/toolbox/discussions
+
+• Documentation: https://github.com/kuloud/toolbox/wiki
+
+Enhance your development workflow with Dev Toolbox - because great developers deserve great tools! 🚀
