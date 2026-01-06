@@ -1,14 +1,27 @@
 {
   "name": "kuloud-toolbox",
   "displayName": "X Toolbox",
-  "description": "",
+  "description": "All-in-one development toolkit with converters, formatters, encoders, generators and more",
   "version": "0.0.1",
   "publisher": "kuloud",
+  "author": {
+    "name": "kuloud"
+  },
   "engines": {
     "vscode": "^1.107.0"
   },
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "tools",
+    "converter",
+    "formatter",
+    "encoder",
+    "decoder",
+    "generator",
+    "developer tools",
+    "utility"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
@@ -18,7 +31,25 @@
         "command": "toolbox.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "toolbox",
+          "title": "Dev Toolbox",
+          "icon": "media/icons/activitybar/toolbox.svg"
+        }
+      ]
+    },
+    "views": {
+      "toolbox": [
+        {
+          "id": "toolbox-view",
+          "name": "Dashboard",
+          "icon": "media/icons/activitybar/toolbox.svg"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
