@@ -57,8 +57,13 @@ export class ToolboxTreeDataProvider
           {
             id: "json-yaml",
             label: "JSON - YAML",
-            // iconPath: new vscode.ThemeIcon("arrow-swap"),
             iconPath: this.getToolIconPath("horizontal-arrows-symbolic"),
+            contextValue: "tool",
+          },
+          {
+            id: "timestamp",
+            label: "Timestamp",
+            iconPath: this.getToolIconPath("calendar-symbolic"),
             contextValue: "tool",
           },
         ],
