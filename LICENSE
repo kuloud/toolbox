@@ -1,0 +1,47 @@
+# STRICT PRIVATE LICENSE AGREEMENT
+
+## CONFIDENTIAL AND PROPRIETARY
+
+**NOTICE**: This software contains confidential and proprietary information. Unauthorized use, disclosure, or distribution is strictly prohibited.
+
+### 1. DEFINITIONS
+- "Software": Includes all code, documentation, assets, and related materials
+- "Authorized User": Individuals explicitly granted access in writing
+- "Derivative Work": Any modification, adaptation, or translation
+
+### 2. LICENSE SCOPE
+Limited license granted solely for:
+- Internal testing and evaluation
+- Specific project development
+- Non-commercial research purposes
+
+### 3. STRICT PROHIBITIONS
+Absolute restrictions include:
+- No network or multi-user access
+- No cloud deployment or SaaS use
+- No benchmarking or performance testing
+- No academic publication without approval
+- No integration with third-party systems
+
+### 4. SECURITY REQUIREMENTS
+You must implement:
+- Access controls and authentication
+- Regular security audits
+- Immediate reporting of vulnerabilities
+- Secure storage of all copies
+
+### 5. EXPORT CONTROLS
+This software may be subject to export control laws. You agree to comply with all applicable international laws.
+
+### 6. INDEMNIFICATION
+You agree to indemnify and hold harmless the copyright holder from any claims resulting from your use of the software.
+
+### 7. SEVERABILITY
+If any provision is found invalid, the remaining provisions shall remain in effect.
+
+### 8. AMENDMENTS
+No modification of this agreement is valid unless in writing and signed by both parties.
+
+---
+
+**VIOLATION OF THIS AGREEMENT MAY RESULT IN LEGAL ACTION AND SIGNIFICANT DAMAGES.**

@@ -7,6 +7,11 @@
   "author": {
     "name": "kuloud"
   },
+  "icon": "media/icons/app/logo.128.png",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuloud/toolbox.git"
+  },
   "engines": {
     "vscode": "^1.107.0"
   },
