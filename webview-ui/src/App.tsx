@@ -1,5 +1,4 @@
 import { vscode } from "./utilities/vscode";
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react";
 import { Routes, Route, useParams } from "react-router-dom";
 import "./App.css";
 import { JsonYamlPage } from "./pages/json-yaml";
@@ -15,7 +14,6 @@ function Hello() {
   return (
     <main>
       <h1>Hello World!</h1>
-      <VSCodeButton onClick={handleHowdyClick}>Howdy!</VSCodeButton>
     </main>
   );
 }
@@ -33,7 +31,6 @@ function View() {
   return (
     <main>
       <h1>View: {viewType}</h1>
-      <VSCodeButton onClick={handleHowdyClick}>Howdy!</VSCodeButton>
     </main>
   );
 }
