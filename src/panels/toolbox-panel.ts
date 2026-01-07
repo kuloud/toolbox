@@ -1,7 +1,13 @@
-import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
+import {
+  Disposable,
+  Webview,
+  WebviewPanel,
+  window,
+  Uri,
+  ViewColumn,
+} from "vscode";
 import { getUri } from "../utils/uri";
 import { getNonce } from "../utils/nonce";
-
 
 /**
  * This class manages the state and behavior of HelloWorld webview panels.
@@ -13,8 +19,8 @@ import { getNonce } from "../utils/nonce";
  * - Setting the HTML (and by proxy CSS/JavaScript) content of the webview panel
  * - Setting message listeners so data can be passed between the webview and extension
  */
-export class HelloWorldPanel {
-  public static currentPanel: HelloWorldPanel | undefined;
+export class ToolboxPanel {
+  public static currentPanel: ToolboxPanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
 
@@ -24,15 +30,23 @@ export class HelloWorldPanel {
    * @param panel A reference to the webview panel
    * @param extensionUri The URI of the directory containing the extension
    */
-  private constructor(panel: WebviewPanel, extensionUri: Uri) {
+  private constructor(
+    panel: WebviewPanel,
+    extensionUri: Uri,
+    initialRoute?: string,
+  ) {
     this._panel = panel;
 
     // Set an event listener to listen for when the panel is disposed (i.e. when the user closes
     // the panel or when the panel is closed programmatically)
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
-    // Set the HTML content for the webview panel
-    this._panel.webview.html = this._getWebviewContent(this._panel.webview, extensionUri);
+    // Set the HTML content for the webview panel (including initial route if provided)
+    this._panel.webview.html = this._getWebviewContent(
+      this._panel.webview,
+      extensionUri,
+      initialRoute,
+    );
 
     // Set an event listener to listen for messages passed from the webview context
     this._setWebviewMessageListener(this._panel.webview);
@@ -44,17 +58,25 @@ export class HelloWorldPanel {
    *
    * @param extensionUri The URI of the directory containing the extension.
    */
-  public static render(extensionUri: Uri) {
-    if (HelloWorldPanel.currentPanel) {
+  public static render(extensionUri: Uri, initialRoute?: string) {
+    if (ToolboxPanel.currentPanel) {
       // If the webview panel already exists reveal it
-      HelloWorldPanel.currentPanel._panel.reveal(ViewColumn.One);
+      ToolboxPanel.currentPanel._panel.reveal(ViewColumn.One);
+
+      // If an initial route is provided, instruct the webview to navigate to it
+      if (initialRoute) {
+        ToolboxPanel.currentPanel._panel.webview.postMessage({
+          command: "navigate",
+          route: initialRoute,
+        });
+      }
     } else {
       // If a webview panel does not already exist create and show a new one
       const panel = window.createWebviewPanel(
         // Panel view type
-        "showHelloWorld",
+        "open",
         // Panel title
-        "Hello World",
+        "Dev Toolbox",
         // The editor column the panel should be displayed in
         ViewColumn.One,
         // Extra panel configurations
@@ -62,11 +84,18 @@ export class HelloWorldPanel {
           // Enable JavaScript in the webview
           enableScripts: true,
           // Restrict the webview to only load resources from the `out` and `webview-ui/build` directories
-          localResourceRoots: [Uri.joinPath(extensionUri, "out"), Uri.joinPath(extensionUri, "webview-ui/build")],
-        }
+          localResourceRoots: [
+            Uri.joinPath(extensionUri, "out"),
+            Uri.joinPath(extensionUri, "webview-ui/build"),
+          ],
+        },
       );
 
-      HelloWorldPanel.currentPanel = new HelloWorldPanel(panel, extensionUri);
+      ToolboxPanel.currentPanel = new ToolboxPanel(
+        panel,
+        extensionUri,
+        initialRoute,
+      );
     }
   }
 
@@ -74,7 +103,7 @@ export class HelloWorldPanel {
    * Cleans up and disposes of webview resources when the webview panel is closed.
    */
   public dispose() {
-    HelloWorldPanel.currentPanel = undefined;
+    ToolboxPanel.currentPanel = undefined;
 
     // Dispose of the current webview panel
     this._panel.dispose();
@@ -99,11 +128,25 @@ export class HelloWorldPanel {
    * @returns A template string literal containing the HTML that should be
    * rendered within the webview panel
    */
-  private _getWebviewContent(webview: Webview, extensionUri: Uri) {
+  private _getWebviewContent(
+    webview: Webview,
+    extensionUri: Uri,
+    initialRoute?: string,
+  ) {
     // The CSS file from the React build output
-    const stylesUri = getUri(webview, extensionUri, ["webview-ui", "build", "assets", "index.css"]);
+    const stylesUri = getUri(webview, extensionUri, [
+      "webview-ui",
+      "build",
+      "assets",
+      "index.css",
+    ]);
     // The JS file from the React build output
-    const scriptUri = getUri(webview, extensionUri, ["webview-ui", "build", "assets", "index.js"]);
+    const scriptUri = getUri(webview, extensionUri, [
+      "webview-ui",
+      "build",
+      "assets",
+      "index.js",
+    ]);
 
     const nonce = getNonce();
 
@@ -120,6 +163,7 @@ export class HelloWorldPanel {
         </head>
         <body>
           <div id="root"></div>
+          <script nonce="${nonce}">window.__INITIAL_DATA__ = ${JSON.stringify({ route: initialRoute, viewType: this._panel.viewType })};</script>
           <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
         </body>
       </html>
@@ -149,7 +193,7 @@ export class HelloWorldPanel {
         }
       },
       undefined,
-      this._disposables
+      this._disposables,
     );
   }
 }

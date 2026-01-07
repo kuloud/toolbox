@@ -30,6 +30,10 @@
       {
         "command": "toolbox.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "toolbox.open",
+        "title": "Open"
       }
     ],
     "viewsContainers": {

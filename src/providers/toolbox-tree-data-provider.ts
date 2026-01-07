@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
 import { ToolItem } from "../types/tree-item";
 
-export class ToolboxTreeDataProvider
-  implements vscode.TreeDataProvider<ToolItem>
-{
+export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem> {
   private toolboxData: ToolItem[] = [];
 
   private _onDidChangeTreeData: vscode.EventEmitter<
@@ -22,7 +20,7 @@ export class ToolboxTreeDataProvider
     return element;
   }
   getChildren(
-    element?: ToolItem | undefined
+    element?: ToolItem | undefined,
   ): vscode.ProviderResult<ToolItem[]> {
     if (element) {
       return Promise.resolve(element.children || []);
@@ -41,7 +39,7 @@ export class ToolboxTreeDataProvider
   resolveTreeItem?(
     item: vscode.TreeItem,
     element: ToolItem,
-    token: vscode.CancellationToken
+    token: vscode.CancellationToken,
   ): vscode.ProviderResult<vscode.TreeItem> {
     return element;
   }
@@ -59,12 +57,22 @@ export class ToolboxTreeDataProvider
             label: "JSON - YAML",
             iconPath: this.getToolIconPath("horizontal-arrows-symbolic"),
             contextValue: "tool",
+            command: {
+              command: "toolbox.open",
+              title: "JSON - YAML",
+              arguments: ["json-yaml"],
+            },
           },
           {
             id: "timestamp",
             label: "Timestamp",
             iconPath: this.getToolIconPath("calendar-symbolic"),
             contextValue: "tool",
+            command: {
+              command: "toolbox.open",
+              title: "Timestamp",
+              arguments: ["timestamp"],
+            },
           },
         ],
       },
@@ -77,7 +85,7 @@ export class ToolboxTreeDataProvider
 
   private getIconPath(
     path: string,
-    iconName: string
+    iconName: string,
   ): vscode.IconPath | undefined {
     try {
       const fileName = iconName.endsWith(".svg") ? iconName : `${iconName}.svg`;
@@ -87,7 +95,7 @@ export class ToolboxTreeDataProvider
         "icons",
         path,
         "light",
-        fileName
+        fileName,
       );
       const darkIconPath = vscode.Uri.joinPath(
         this.context.extensionUri,
@@ -95,7 +103,7 @@ export class ToolboxTreeDataProvider
         "icons",
         path,
         "dark",
-        fileName
+        fileName,
       );
       return {
         light: lightIconPath,

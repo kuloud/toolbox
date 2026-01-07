@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
 import { ToolboxTreeDataProvider } from "./providers/toolbox-tree-data-provider";
-import { HelloWorldPanel } from "./panels/react-panel";
+import { ToolboxPanel } from "./panels/toolbox-panel";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -20,8 +20,20 @@ export function activate(context: vscode.ExtensionContext) {
       // The code you place here will be executed every time your command is executed
       // Display a message box to the user
       vscode.window.showInformationMessage("Hello World from toolbox!");
-      HelloWorldPanel.render(context.extensionUri);
+      ToolboxPanel.render(context.extensionUri);
     },
+  );
+
+  // Command to open a specific tool in the webview and navigate to its route
+  const openToolDisposable = vscode.commands.registerCommand(
+    "toolbox.open",
+    (toolId: string) => {
+      if (!toolId) {
+        return;
+      }
+      const route = `/view/${toolId}`;
+      ToolboxPanel.render(context.extensionUri, route);
+    }
   );
 
   const treeDataProvider = new ToolboxTreeDataProvider(context);
@@ -31,8 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
     showCollapseAll: true,
   });
 
-  context.subscriptions.push(treeView, disposable);
-}
+  context.subscriptions.push(treeView, disposable, openToolDisposable);}
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
