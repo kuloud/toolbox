@@ -1,10 +1,11 @@
 # Change Log
 
-All notable changes to the "toolbox" extension will be documented in this file.
-
 ## [Unreleased]
 
-- Initial release
+### Added
+
+- JSON - YAML Converter
+- Timestamp Converter
 
 ## [0.0.3] - 2026-01-07
 
@@ -12,19 +13,3 @@ All notable changes to the "toolbox" extension will be documented in this file.
 
 - JSON - YAML Converter
 - Timestamp Converter
-
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
-
-
-
-
-
-

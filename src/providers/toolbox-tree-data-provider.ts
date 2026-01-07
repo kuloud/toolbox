@@ -49,8 +49,8 @@ export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem
       {
         id: "converters",
         label: "Converters",
-        collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
         contextValue: "category",
+        collapsibleState: vscode.TreeItemCollapsibleState.Expanded,
         children: [
           {
             id: "json-yaml",
@@ -72,6 +72,25 @@ export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem
               command: "toolbox.open",
               title: "Timestamp",
               arguments: ["timestamp"],
+            },
+          },
+        ],
+      },
+      {
+        id: "graphics",
+        label: "Graphics",
+        contextValue: "category",
+        collapsibleState: vscode.TreeItemCollapsibleState.Expanded,
+        children: [
+          {
+            id: "image-converter",
+            label: "Image Format Converter",
+            iconPath: this.getToolIconPath("image-symbolic"),
+            contextValue: "tool",
+            command: {
+              command: "toolbox.open",
+              title: "JSON - YAML",
+              arguments: ["image-converter"],
             },
           },
         ],

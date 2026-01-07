@@ -8,6 +8,10 @@ A comprehensive Visual Studio Code extension providing essential developer tools
 
 • JSON ↔ YAML: Seamlessly convert between JSON and YAML formats
 
+⏰ Time Utilities
+
+• Timestamp Conversion: Convert between Unix timestamps and human-readable dates
+
 ## Requirements
 
 No additional dependencies required. The extension works out-of-the-box with Visual Studio Code version 1.74.0 or higher.
@@ -19,23 +23,6 @@ Access all tools through the Command Palette (Ctrl+Shift+P or Cmd+Shift+P):
 Command Description
 
 Dev Toolbox: Show Main Panel Open the main toolbox interface
-
-## Usage Examples
-
-JSON to YAML Conversion
-
-1. Open command palette and select Dev Toolbox: Format Converter
-2. Choose "JSON to YAML"
-3. Paste your JSON data or load from file
-
-## Release Notes
-
-0.0.2
-
-Initial release featuring:
-• Core extension framework
-
-• Basic extension structure and configuration
 
 ## License
 
