@@ -72,6 +72,33 @@ class VSCodeAPIWrapper {
       return newState;
     }
   }
+
+  public toast = {
+    info: (message: string) => {
+      vscode.postMessage({
+        command: "showInformationMessage",
+        text: message,
+      });
+    },
+    success: (message: string) => {
+      vscode.postMessage({
+        command: "showInformationMessage",
+        text: message,
+      });
+    },
+    warning: (message: string) => {
+      vscode.postMessage({
+        command: "showWarningMessage",
+        text: message,
+      });
+    },
+    error: (message: string) => {
+      vscode.postMessage({
+        command: "showErrorMessage",
+        text: message,
+      });
+    },
+  };
 }
 
 // Exports class singleton to prevent multiple invocations of acquireVsCodeApi.
