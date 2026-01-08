@@ -1,23 +1,60 @@
 {
-  "name": "toolbox",
-  "displayName": "toolbox",
-  "description": "",
-  "version": "0.0.1",
+  "name": "kuloud-toolbox",
+  "displayName": "X Toolbox",
+  "description": "All-in-one development toolkit with converters, formatters, encoders, generators and more",
+  "version": "0.0.3",
+  "publisher": "kuloud",
+  "author": {
+    "name": "kuloud"
+  },
+  "icon": "media/icons/app/logo.128.png",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuloud/toolbox.git"
+  },
   "engines": {
     "vscode": "^1.107.0"
   },
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "tools",
+    "converter",
+    "formatter",
+    "encoder",
+    "decoder",
+    "generator",
+    "developer tools",
+    "utility"
+  ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "toolbox.helloWorld",
-        "title": "Hello World"
+        "command": "toolbox.open",
+        "title": "Open"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "toolbox",
+          "title": "Dev Toolbox",
+          "icon": "media/icons/activitybar/toolbox.svg"
+        }
+      ]
+    },
+    "views": {
+      "toolbox": [
+        {
+          "id": "toolbox-view",
+          "name": "Dashboard",
+          "icon": "media/icons/activitybar/toolbox.svg"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
@@ -31,16 +68,19 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.107.0",
     "@types/mocha": "^10.0.10",
-    "@types/node": "22.x",
-    "typescript-eslint": "^8.48.1",
-    "eslint": "^9.39.1",
-    "typescript": "^5.9.3",
-    "ts-loader": "^9.5.4",
-    "webpack": "^5.103.0",
-    "webpack-cli": "^6.0.1",
+    "@types/node": "24.x",
+    "@types/vscode": "^1.107.0",
     "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "^9.39.1",
+    "prettier": "^3.7.4",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1",
+    "webpack": "^5.103.0",
+    "webpack-cli": "^6.0.1"
   }
 }

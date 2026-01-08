@@ -1,71 +1,35 @@
-# toolbox README
+# Dev Toolbox
 
-This is the README for your extension "toolbox". After writing up a brief description, we recommend including the following sections.
+A comprehensive Visual Studio Code extension providing essential developer tools directly within your editor. Streamline your workflow with built-in utilities for format conversion, time formatting, encoding/decoding, and more - all without leaving your coding environment.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+🔄 Format Conversion
 
-For example if there is an image subfolder under your extension project workspace:
+• JSON ↔ YAML: Seamlessly convert between JSON and YAML formats
 
-\!\[feature X\]\(images/feature-x.png\)
+⏰ Time Utilities
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+• Timestamp Conversion: Convert between Unix timestamps and human-readable dates
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+No additional dependencies required. The extension works out-of-the-box with Visual Studio Code version 1.74.0 or higher.
 
-## Extension Settings
+## Commands
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Access all tools through the Command Palette (Ctrl+Shift+P or Cmd+Shift+P):
 
-For example:
+Command Description
 
-This extension contributes the following settings:
+Dev Toolbox: Show Main Panel Open the main toolbox interface
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+## License
 
-## Known Issues
+This project is licensed under a Private License. All rights reserved.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+This is proprietary software owned by the project maintainers. No part of this software may be reproduced, distributed, or transmitted in any form or by any means, including photocopying, recording, or other electronic or mechanical methods, without the prior written permission of the owner, except in cases where such copying is expressly permitted by applicable law.
 
-## Release Notes
+For licensing inquiries, please contact: [kuloud@outlook.com](mailto:kuloud@outlook.com)
 
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Enhance your development workflow with Dev Toolbox - because great developers deserve great tools! 🚀
