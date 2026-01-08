@@ -2,7 +2,7 @@
   "name": "kuloud-toolbox",
   "displayName": "X Toolbox",
   "description": "All-in-one development toolkit with converters, formatters, encoders, generators and more",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "kuloud",
   "author": {
     "name": "kuloud"

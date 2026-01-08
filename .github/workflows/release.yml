@@ -66,6 +66,51 @@ jobs:
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "changed=true" >> $GITHUB_OUTPUT
 
+      - name: Extract changelog entry
+        id: changelog
+        if: steps.detect.outputs.changed == 'true'
+        run: |
+          set -e
+          VERSION="${{ steps.detect.outputs.version }}"
+
+          # 检查是否有 CHANGELOG.md 文件
+          if [ ! -f "CHANGELOG.md" ]; then
+            echo "No CHANGELOG.md found, using default release notes"
+            echo "release_notes=Automated release for version $VERSION" >> $GITHUB_OUTPUT
+            echo "has_changelog=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # 使用 sed 和 awk 提取对应版本的 changelog
+          # 查找以版本号开头的行（支持 v1.2.3 或 1.2.3 格式）
+          CHANGELOG_ENTRY=$(awk -v version="$VERSION" '
+            BEGIN { capture=0; found=0 }
+            /^## \[?v?' version '\]?/ || /^## \[' version '\]/ {
+              capture=1
+              found=1
+              print "## " version
+              next
+            }
+            /^## \[?v?[0-9]+\.[0-9]+\.[0-9]+[^0-9]*\]?/ && capture {
+              capture=0
+            }
+            capture && /^## / { next }  # 跳过其他标题
+            capture { print }
+            END { if (!found) { print "Automated release for version " version } }
+          ' CHANGELOG.md | sed '/^$/N;/^\n$/D' | head -30)  # 限制输出长度
+
+          if [ -z "$CHANGELOG_ENTRY" ] || [ "$CHANGELOG_ENTRY" = "Automated release for version $VERSION" ]; then
+            echo "No changelog entry found for version $VERSION"
+            echo "release_notes=Automated release for version $VERSION" >> $GITHUB_OUTPUT
+            echo "has_changelog=false" >> $GITHUB_OUTPUT
+          else
+            echo "Found changelog entry for version $VERSION"
+            echo "release_notes<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGELOG_ENTRY" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "has_changelog=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create tag and push
         if: steps.detect.outputs.changed == 'true'
         run: |
@@ -98,17 +143,6 @@ jobs:
             npm run lint
             # npm run test
           fi
-
-      - name: Create GitHub Release
-        if: steps.detect.outputs.changed == 'true'
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.detect.outputs.tag }}
-          name: ${{ steps.detect.outputs.tag }}
-          body: "Automated release for version ${{ steps.detect.outputs.version }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build webview UI
         if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json')
@@ -145,6 +179,19 @@ jobs:
 
           # Create vsix artifact using @vscode/vsce (preferred over deprecated vsce)
           npx --yes @vscode/vsce package --no-dependencies -o extension.vsix
+
+      - name: Create GitHub Release
+        if: steps.detect.outputs.changed == 'true'
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.detect.outputs.tag }}
+          name: Release ${{ steps.detect.outputs.version }}
+          body: ${{ steps.changelog.outputs.release_notes }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload .vsix to Release
         if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json')
