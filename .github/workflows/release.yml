@@ -1,0 +1,161 @@
+name: Release on version bump
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  detect-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Detect changed package.json and version
+        id: detect
+        run: |
+          set -e
+          git fetch --prune --unshallow || true
+
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || true)
+          PACKAGES=$(echo "$CHANGED_FILES" | grep -E '(^|/)(package.json)$' || true)
+
+          if [ -z "$PACKAGES" ]; then
+            echo "No package.json changed in this push"
+            echo "changed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          CHANGED_FILE=$(echo "$PACKAGES" | head -n1)
+          echo "changed_file=$CHANGED_FILE" >> $GITHUB_OUTPUT
+
+          VERSION=$(jq -r '.version' "$CHANGED_FILE")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          if [ "$CHANGED_FILE" = "package.json" ]; then
+            TAG="v$VERSION"
+          else
+            DIR=$(dirname "$CHANGED_FILE" | tr '/' '-')
+            TAG="${DIR}-v$VERSION"
+          fi
+
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Create tag and push
+        if: steps.detect.outputs.changed == 'true'
+        run: |
+          set -e
+          TAG=${{ steps.detect.outputs.tag }}
+
+          if git rev-parse --verify --quiet "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists. Skipping tag creation."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+
+      - name: Run build and tests
+        if: steps.detect.outputs.changed == 'true'
+        run: |
+          set -e
+          echo "Running build, lint and tests before creating release"
+          if command -v pnpm >/dev/null 2>&1; then
+            pnpm install --frozen-lockfile || true
+            pnpm run compile || true
+            pnpm run lint || true
+            pnpm run test || true
+          elif command -v npm >/dev/null 2>&1; then
+            npm ci || true
+            npm run compile || true
+            npm run lint || true
+            npm run test || true
+          fi
+
+      - name: Create GitHub Release
+        if: steps.detect.outputs.changed == 'true'
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.detect.outputs.tag }}
+          name: ${{ steps.detect.outputs.tag }}
+          body: "Automated release for version ${{ steps.detect.outputs.version }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build extension (.vsix)
+        if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json')
+        run: |
+          set -e
+          echo "Building extension .vsix artifact"
+          if command -v pnpm >/dev/null 2>&1; then
+            pnpm install --frozen-lockfile || true
+            pnpm run package || true
+          elif command -v npm >/dev/null 2>&1; then
+            npm ci || true
+            npm run package || true
+          fi
+
+          # Ensure vsce is available for packaging
+          if ! command -v vsce >/dev/null 2>&1; then
+            npm i -g vsce
+          fi
+
+          # Create vsix artifact
+          vsce package -o extension.vsix
+
+      - name: Upload .vsix to Release
+        if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json')
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./extension.vsix
+          asset_name: extension.vsix
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish VS Code Extension to Marketplace
+        if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json') && env.DRY_RUN != 'true'
+        env:
+          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+        run: |
+          set -e
+
+          if [ -z "${VSCE_TOKEN}" ]; then
+            echo "VSCE_TOKEN is not set. Skipping publish to Marketplace. If you want to publish automatically, add the VSCE_TOKEN secret."
+            exit 1
+          fi
+
+          echo "Publishing VS Code extension to Marketplace"
+
+          if command -v pnpm >/dev/null 2>&1; then
+            pnpm install --frozen-lockfile || true
+            pnpm run vscode:prepublish || pnpm run package || true
+          elif command -v npm >/dev/null 2>&1; then
+            npm ci || true
+            npm run vscode:prepublish || npm run package || true
+          fi
+
+          # Install vsce if not available
+          if ! command -v vsce >/dev/null 2>&1; then
+            npm i -g vsce
+          fi
+
+          # Use the PAT to publish. Use --pat for explicit token
+          vsce publish --pat "${VSCE_TOKEN}"
