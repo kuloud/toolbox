@@ -1,8 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { ToolboxTreeDataProvider } from "./providers/toolbox-tree-data-provider";
 import { ToolboxPanel } from "./panels/toolbox-panel";
+import { ToolboxTreeDataProvider } from "./providers/toolbox-tree-data-provider";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
     (toolId: string) => {
       console.log("[openTool]", { toolId });
       if (!toolId) {
-        ToolboxPanel.render(context.extensionUri);
+        ToolboxPanel.render(context.extensionUri, "/");
         return;
       }
       const route = `/view/${toolId}`;

@@ -34,7 +34,8 @@
     "commands": [
       {
         "command": "toolbox.open",
-        "title": "Open"
+        "title": "Open Dev Toolbox",
+        "icon": "media/icons/activitybar/toolbox.svg"
       }
     ],
     "viewsContainers": {
@@ -51,7 +52,8 @@
         {
           "id": "toolbox-view",
           "name": "Dashboard",
-          "icon": "media/icons/activitybar/toolbox.svg"
+          "icon": "media/icons/activitybar/toolbox.svg",
+          "contextualTitle": "Dashboard"
         }
       ]
     }

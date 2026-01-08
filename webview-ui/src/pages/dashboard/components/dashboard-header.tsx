@@ -13,7 +13,7 @@ export function DashboardHeader() {
               <Terminal className="h-5 w-5 text-primary" />
             </div>
             <span className="text-lg font-semibold text-foreground">
-              DevToolbox
+              Dev Toolbox
             </span>
           </div>
 

@@ -1,29 +1,45 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { tools } from "@/data/tools";
+import { activeCategoryAtom } from "@/stores/tools";
+import { useAtom } from "jotai";
+import { useMemo } from "react";
 
-const categories = [
-  { id: "all", label: "All Tools" },
-  { id: "encoding", label: "Encoding" },
-  { id: "formatting", label: "Formatting" },
-  { id: "generators", label: "Generators" },
-  { id: "converters", label: "Converters" },
-];
+function generateCategoriesFromTools() {
+  const categorySet = new Set<string>();
+
+  tools.forEach((tool) => {
+    if (tool.category) {
+      categorySet.add(tool.category);
+    }
+  });
+
+  const categories = Array.from(categorySet).sort();
+
+  return [
+    { id: "all", label: "All Tools" },
+    ...categories.map((category) => ({
+      id: category,
+      label: category.charAt(0).toUpperCase() + category.slice(1),
+    })),
+  ];
+}
 
 export function CategoryFilter() {
-  const [active, setActive] = useState("all");
+  const [activeCategory, setActiveCategory] = useAtom(activeCategoryAtom);
+  const categories = useMemo(() => generateCategoriesFromTools(), []);
 
   return (
     <div className="flex flex-wrap gap-2">
       {categories.map((category) => (
         <Button
           key={category.id}
-          variant={active === category.id ? "default" : "secondary"}
+          variant={activeCategory === category.id ? "default" : "secondary"}
           size="sm"
-          onClick={() => setActive(category.id)}
+          onClick={() => setActiveCategory(category.id)}
           className={
-            active === category.id
+            activeCategory === category.id
               ? "bg-primary text-primary-foreground hover:bg-primary/90"
               : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
           }
