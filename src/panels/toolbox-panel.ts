@@ -5,6 +5,7 @@ import {
   window,
   Uri,
   ViewColumn,
+  ColorThemeKind,
 } from "vscode";
 import { getUri } from "../utils/uri";
 import { getNonce } from "../utils/nonce";
@@ -41,6 +42,8 @@ export class ToolboxPanel {
     // the panel or when the panel is closed programmatically)
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
+    this._updateTheme();
+
     // Set the HTML content for the webview panel (including initial route if provided)
     this._panel.webview.html = this._getWebviewContent(
       this._panel.webview,
@@ -50,6 +53,15 @@ export class ToolboxPanel {
 
     // Set an event listener to listen for messages passed from the webview context
     this._setWebviewMessageListener(this._panel.webview);
+
+    this._registerThemeListener();
+  }
+
+  private _registerThemeListener() {
+    const themeDisposable = window.onDidChangeActiveColorTheme(() => {
+      this._updateTheme();
+    });
+    this._disposables.push(themeDisposable);
   }
 
   /**
@@ -106,14 +118,44 @@ export class ToolboxPanel {
     ToolboxPanel.currentPanel = undefined;
 
     // Dispose of the current webview panel
-    this._panel.dispose();
+    this._panel?.dispose();
 
     // Dispose of all disposables (i.e. commands) for the current webview panel
-    while (this._disposables.length) {
+    while (this._disposables?.length) {
       const disposable = this._disposables.pop();
       if (disposable) {
-        disposable.dispose();
+        disposable?.dispose();
       }
+    }
+  }
+
+  private _updateTheme() {
+    if (!this._panel) {
+      return;
+    }
+
+    const theme = window.activeColorTheme.kind;
+    const themeName = this._getThemeName(theme);
+
+    this._panel.webview.postMessage({
+      command: "themeChanged",
+      theme: themeName,
+      themeKind: theme,
+    });
+  }
+
+  private _getThemeName(themeKind: ColorThemeKind): string {
+    switch (themeKind) {
+      case ColorThemeKind.Light:
+        return "light";
+      case ColorThemeKind.Dark:
+        return "dark";
+      case ColorThemeKind.HighContrast:
+        return "dark";
+      case ColorThemeKind.HighContrastLight:
+        return "light";
+      default:
+        return "dark";
     }
   }
 
@@ -150,6 +192,8 @@ export class ToolboxPanel {
 
     const nonce = getNonce();
 
+    const currentTheme = this._getThemeName(window.activeColorTheme.kind);
+
     // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
     return /*html*/ `
       <!DOCTYPE html>
@@ -159,11 +203,11 @@ export class ToolboxPanel {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
           <link rel="stylesheet" type="text/css" href="${stylesUri}">
-          <title>Hello World</title>
+          <title>Dev Toolbox</title>
         </head>
         <body>
           <div id="root"></div>
-          <script nonce="${nonce}">window.__INITIAL_DATA__ = ${JSON.stringify({ route: initialRoute, viewType: this._panel.viewType })};</script>
+          <script nonce="${nonce}">window.__INITIAL_DATA__ = ${JSON.stringify({ route: initialRoute, viewType: this._panel.viewType, initialTheme: currentTheme })};</script>
           <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
         </body>
       </html>

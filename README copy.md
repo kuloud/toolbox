@@ -8,7 +8,7 @@ A comprehensive Visual Studio Code extension providing essential developer tools
 
 • JSON ↔ YAML: Seamlessly convert between JSON and YAML formats
 
-• XML ↔ JSON: Transform XML data structures to JSON and vice versa  
+• XML ↔ JSON: Transform XML data structures to JSON and vice versa
 
 • CSV ↔ JSON: Convert tabular CSV data to JSON arrays and back
 

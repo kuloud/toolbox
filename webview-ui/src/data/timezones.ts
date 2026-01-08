@@ -2,7 +2,7 @@ export const timezones = [
   // UTC/GMT
   { value: "UTC", label: "UTC" },
   { value: "GMT", label: "GMT" },
-  
+
   // North America
   { value: "America/New_York", label: "Eastern Time (EST/EDT)" },
   { value: "America/Chicago", label: "Central Time (CST/CDT)" },
@@ -21,7 +21,7 @@ export const timezones = [
   { value: "America/Caracas", label: "Venezuela Time (VET)" },
   { value: "America/Lima", label: "Peru Time (PET)" },
   { value: "America/Bogota", label: "Colombia Time (COT)" },
-  
+
   // Europe
   { value: "Europe/London", label: "Greenwich Mean Time (GMT/BST)" },
   { value: "Europe/Dublin", label: "Irish Standard Time (IST/GMT)" },
@@ -53,7 +53,7 @@ export const timezones = [
   { value: "Asia/Magadan", label: "Magadan Time (MAGT)" },
   { value: "Asia/Kamchatka", label: "Kamchatka Time (PETT)" },
   { value: "Asia/Anadyr", label: "Anadyr Time (ANAT)" },
-  
+
   // Africa
   { value: "Africa/Cairo", label: "Eastern European Time - Cairo" },
   { value: "Africa/Johannesburg", label: "South Africa Standard Time (SAST)" },
@@ -65,7 +65,7 @@ export const timezones = [
   { value: "Africa/Addis_Ababa", label: "East Africa Time - Addis Ababa" },
   { value: "Africa/Dakar", label: "Greenwich Mean Time - Dakar" },
   { value: "Africa/Accra", label: "Greenwich Mean Time - Accra" },
-  
+
   // Asia
   { value: "Asia/Riyadh", label: "Arabia Standard Time (AST)" },
   { value: "Asia/Dubai", label: "Gulf Standard Time (GST)" },
@@ -107,15 +107,21 @@ export const timezones = [
   { value: "Asia/Bahrain", label: "Arabia Standard Time - Bahrain" },
   { value: "Asia/Aden", label: "Arabia Standard Time - Aden" },
   { value: "Asia/Rangoon", label: "Myanmar Time (MMT)" },
-  
+
   // Australia/Oceania
   { value: "Australia/Perth", label: "Australian Western Time (AWST)" },
-  { value: "Australia/Eucla", label: "Australian Central Western Time (ACWST)" },
+  {
+    value: "Australia/Eucla",
+    label: "Australian Central Western Time (ACWST)",
+  },
   { value: "Australia/Adelaide", label: "Australian Central Time (ACST/ACDT)" },
   { value: "Australia/Darwin", label: "Australian Central Time (ACST)" },
   { value: "Australia/Brisbane", label: "Australian Eastern Time (AEST)" },
   { value: "Australia/Sydney", label: "Australian Eastern Time (AEST/AEDT)" },
-  { value: "Australia/Melbourne", label: "Australian Eastern Time - Melbourne" },
+  {
+    value: "Australia/Melbourne",
+    label: "Australian Eastern Time - Melbourne",
+  },
   { value: "Australia/Hobart", label: "Australian Eastern Time - Hobart" },
   { value: "Pacific/Auckland", label: "New Zealand Time (NZST/NZDT)" },
   { value: "Pacific/Chatham", label: "Chatham Standard Time (CHAST)" },
@@ -138,7 +144,7 @@ export const timezones = [
   { value: "Pacific/Marquesas", label: "Marquesas Time (MART)" },
   { value: "Pacific/Gambier", label: "Gambier Time (GAMT)" },
   { value: "Pacific/Norfolk", label: "Norfolk Island Time (NFT)" },
-  
+
   // Atlantic Islands
   { value: "Atlantic/Azores", label: "Azores Time (AZOT/AZOST)" },
   { value: "Atlantic/Cape_Verde", label: "Cape Verde Time (CVT)" },
@@ -149,18 +155,21 @@ export const timezones = [
   { value: "Atlantic/Canary", label: "Western European Time - Canary" },
   { value: "Atlantic/Faroe", label: "Western European Time - Faroe" },
   { value: "Atlantic/Madeira", label: "Western European Time - Madeira" },
-  
+
   // Indian Ocean
   { value: "Indian/Chagos", label: "Indian Ocean Time (IOT)" },
   { value: "Indian/Christmas", label: "Christmas Island Time (CXT)" },
   { value: "Indian/Cocos", label: "Cocos Islands Time (CCT)" },
   { value: "Indian/Comoro", label: "East Africa Time - Comoro" },
-  { value: "Indian/Kerguelen", label: "French Southern & Antarctic Time (TFT)" },
+  {
+    value: "Indian/Kerguelen",
+    label: "French Southern & Antarctic Time (TFT)",
+  },
   { value: "Indian/Mahe", label: "Seychelles Time (SCT)" },
   { value: "Indian/Maldives", label: "Maldives Time (MVT)" },
   { value: "Indian/Mauritius", label: "Mauritius Time (MUT)" },
   { value: "Indian/Reunion", label: "Reunion Time (RET)" },
-  
+
   // Antarctica
   { value: "Antarctica/McMurdo", label: "New Zealand Time - McMurdo" },
   { value: "Antarctica/Casey", label: "Casey Time (CAST)" },

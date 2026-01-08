@@ -175,7 +175,7 @@ function TimezoneSelect({
       <button
         type="button"
         onClick={handleTriggerClick}
-        className="flex items-center justify-between w-[280px] h-10 px-3 text-sm border border-input bg-background rounded-md shadow-sm hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="flex items-center justify-between w-70 h-10 px-3 text-sm border border-input bg-background rounded-md shadow-sm hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
       >
         <span className="truncate">
           {selectedTimezone ? selectedTimezone.label : "Select timezone"}
@@ -185,7 +185,7 @@ function TimezoneSelect({
 
       {/* Dropdown Content */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-[280px] bg-popover text-popover-foreground rounded-md border shadow-md z-50">
+        <div className="absolute top-full left-0 mt-1 w-70 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
           {/* Search Input */}
           <div className="relative p-2 border-b">
             <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
