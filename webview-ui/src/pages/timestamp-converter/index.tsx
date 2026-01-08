@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { timezones } from "@/data/timezones";
-import { vscode } from "@/lib/vscode";
+import toast from "@/lib/toast";
 import {
   CalendarIcon,
   ChevronDownIcon,
@@ -450,7 +450,7 @@ export function TimestampPage() {
   // Copy to clipboard function
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
-      vscode.toast.success("Copied to clipboard!");
+      toast.success("Copied to clipboard!");
     });
   };
 

@@ -99,6 +99,10 @@ class VSCodeAPIWrapper {
       });
     },
   };
+
+  public isInVSCode(): boolean {
+    return typeof this.vsCodeApi !== "undefined";
+  }
 }
 
 // Exports class singleton to prevent multiple invocations of acquireVsCodeApi.

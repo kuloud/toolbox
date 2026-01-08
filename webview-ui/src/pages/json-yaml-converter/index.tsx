@@ -10,7 +10,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { vscode } from "@/lib/vscode";
+import toast from "@/lib/toast";
 import * as yaml from "js-yaml";
 import {
   CopyIcon,
@@ -101,7 +101,7 @@ export function JsonYamlPage() {
 
   const handleCopyOutput = () => {
     navigator.clipboard.writeText(outputText).then(() => {
-      vscode.toast.success("Copied to clipboard!");
+      toast.success("Copied to clipboard!");
     });
   };
 
@@ -131,7 +131,7 @@ export function JsonYamlPage() {
   const clearAll = () => {
     setInputText("");
     setOutputText("");
-    vscode.toast.info("Content cleared");
+    toast.info("Content cleared");
   };
 
   const increaseIndentation = () => {
