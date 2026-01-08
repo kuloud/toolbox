@@ -22,7 +22,7 @@ Access all tools through the Command Palette (Ctrl+Shift+P or Cmd+Shift+P):
 
 Command Description
 
-Dev Toolbox: Show Main Panel Open the main toolbox interface
+`Open Dev Toolbox` Open the main toolbox interface
 
 ## License
 
