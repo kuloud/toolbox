@@ -24,6 +24,18 @@ jobs:
         with:
           node-version: '24'
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          pnpm-version: '10'
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
       - name: Detect changed package.json and version
         id: detect
         run: |
@@ -77,15 +89,15 @@ jobs:
           set -e
           echo "Running build, lint and tests before creating release"
           if command -v pnpm >/dev/null 2>&1; then
-            pnpm install --frozen-lockfile || true
-            pnpm run compile || true
-            pnpm run lint || true
-            pnpm run test || true
+            pnpm install --frozen-lockfile
+            pnpm run compile
+            pnpm run lint
+            pnpm run test
           elif command -v npm >/dev/null 2>&1; then
-            npm ci || true
-            npm run compile || true
-            npm run lint || true
-            npm run test || true
+            npm ci
+            npm run compile
+            npm run lint
+            npm run test
           fi
 
       - name: Create GitHub Release
@@ -99,26 +111,41 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build webview UI
+        if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json')
+        run: |
+          set -e
+          echo "Building webview-ui"
+          if [ -d webview-ui ]; then
+            cd webview-ui
+            if command -v pnpm >/dev/null 2>&1; then
+              pnpm install --frozen-lockfile
+              pnpm run build
+            elif command -v npm >/dev/null 2>&1; then
+              npm ci
+              npm run build
+            fi
+            cd -
+          fi
+
       - name: Build extension (.vsix)
         if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json')
         run: |
           set -e
           echo "Building extension .vsix artifact"
           if command -v pnpm >/dev/null 2>&1; then
-            pnpm install --frozen-lockfile || true
-            pnpm run package || true
+            pnpm install --frozen-lockfile
+            pnpm run package
           elif command -v npm >/dev/null 2>&1; then
-            npm ci || true
-            npm run package || true
+            npm ci
+            npm run package
           fi
 
-          # Ensure vsce is available for packaging
-          if ! command -v vsce >/dev/null 2>&1; then
-            npm i -g vsce
-          fi
+          # Remove local webview UI node_modules to prevent accidental inclusion in the .vsix
+          rm -rf webview-ui/node_modules || true
 
-          # Create vsix artifact
-          vsce package -o extension.vsix
+          # Create vsix artifact using @vscode/vsce (preferred over deprecated vsce)
+          npx --yes @vscode/vsce package --no-dependencies -o extension.vsix
 
       - name: Upload .vsix to Release
         if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json')
@@ -146,17 +173,15 @@ jobs:
           echo "Publishing VS Code extension to Marketplace"
 
           if command -v pnpm >/dev/null 2>&1; then
-            pnpm install --frozen-lockfile || true
-            pnpm run vscode:prepublish || pnpm run package || true
+            pnpm install --frozen-lockfile
+            pnpm run vscode:prepublish || pnpm run package
           elif command -v npm >/dev/null 2>&1; then
-            npm ci || true
-            npm run vscode:prepublish || npm run package || true
+            npm ci
+            npm run vscode:prepublish || npm run package
           fi
 
-          # Install vsce if not available
-          if ! command -v vsce >/dev/null 2>&1; then
-            npm i -g vsce
-          fi
+          # Remove local webview UI node_modules to prevent accidental inclusion
+          rm -rf webview-ui/node_modules || true
 
-          # Use the PAT to publish. Use --pat for explicit token
-          vsce publish --pat "${VSCE_TOKEN}"
+          # Publish using @vscode/vsce via npx (preferred to deprecated vsce)
+          npx --yes @vscode/vsce publish --pat "${VSCE_TOKEN}" --no-dependencies
