@@ -1,0 +1,233 @@
+name: Release on version bump
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  detect-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Detect changed package.json and version
+        id: detect
+        run: |
+          set -e
+          git fetch --prune --unshallow || true
+
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || true)
+          PACKAGES=$(echo "$CHANGED_FILES" | grep -E '(^|/)(package.json)$' || true)
+
+          if [ -z "$PACKAGES" ]; then
+            echo "No package.json changed in this push"
+            echo "changed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          CHANGED_FILE=$(echo "$PACKAGES" | head -n1)
+          echo "changed_file=$CHANGED_FILE" >> $GITHUB_OUTPUT
+
+          VERSION=$(jq -r '.version' "$CHANGED_FILE")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+          if [ "$CHANGED_FILE" = "package.json" ]; then
+            TAG="v$VERSION"
+          else
+            DIR=$(dirname "$CHANGED_FILE" | tr '/' '-')
+            TAG="${DIR}-v$VERSION"
+          fi
+
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Extract changelog entry
+        id: changelog
+        if: steps.detect.outputs.changed == 'true'
+        run: |
+          set -e
+          VERSION="${{ steps.detect.outputs.version }}"
+
+          # 检查是否有 CHANGELOG.md 文件
+          if [ ! -f "CHANGELOG.md" ]; then
+            echo "No CHANGELOG.md found, using default release notes"
+            echo "release_notes=Automated release for version $VERSION" >> $GITHUB_OUTPUT
+            echo "has_changelog=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # 使用 sed 和 awk 提取对应版本的 changelog
+          # 查找以版本号开头的行（支持 v1.2.3 或 1.2.3 格式）
+          CHANGELOG_ENTRY=$(awk -v version="$VERSION" '
+            BEGIN { capture=0; found=0 }
+            /^## \[?v?' version '\]?/ || /^## \[' version '\]/ {
+              capture=1
+              found=1
+              print "## " version
+              next
+            }
+            /^## \[?v?[0-9]+\.[0-9]+\.[0-9]+[^0-9]*\]?/ && capture {
+              capture=0
+            }
+            capture && /^## / { next }  # 跳过其他标题
+            capture { print }
+            END { if (!found) { print "Automated release for version " version } }
+          ' CHANGELOG.md | sed '/^$/N;/^\n$/D' | head -30)  # 限制输出长度
+
+          if [ -z "$CHANGELOG_ENTRY" ] || [ "$CHANGELOG_ENTRY" = "Automated release for version $VERSION" ]; then
+            echo "No changelog entry found for version $VERSION"
+            echo "release_notes=Automated release for version $VERSION" >> $GITHUB_OUTPUT
+            echo "has_changelog=false" >> $GITHUB_OUTPUT
+          else
+            echo "Found changelog entry for version $VERSION"
+            echo "release_notes<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGELOG_ENTRY" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "has_changelog=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create tag and push
+        if: steps.detect.outputs.changed == 'true'
+        run: |
+          set -e
+          TAG=${{ steps.detect.outputs.tag }}
+
+          if git rev-parse --verify --quiet "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists. Skipping tag creation."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+
+      - name: Run build and tests
+        if: steps.detect.outputs.changed == 'true'
+        run: |
+          set -e
+          echo "Running build, lint and tests before creating release"
+          if command -v pnpm >/dev/null 2>&1; then
+            pnpm install --frozen-lockfile
+            pnpm run compile
+            pnpm run lint
+            # pnpm run test
+          elif command -v npm >/dev/null 2>&1; then
+            npm ci
+            npm run compile
+            npm run lint
+            # npm run test
+          fi
+
+      - name: Build webview UI
+        if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json')
+        run: |
+          set -e
+          echo "Building webview-ui"
+          if [ -d webview-ui ]; then
+            cd webview-ui
+            if command -v pnpm >/dev/null 2>&1; then
+              pnpm install --frozen-lockfile
+              pnpm run build
+            elif command -v npm >/dev/null 2>&1; then
+              npm ci
+              npm run build
+            fi
+            cd -
+          fi
+
+      - name: Build extension (.vsix)
+        if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json')
+        run: |
+          set -e
+          echo "Building extension .vsix artifact"
+          if command -v pnpm >/dev/null 2>&1; then
+            pnpm install --frozen-lockfile
+            pnpm run package
+          elif command -v npm >/dev/null 2>&1; then
+            npm ci
+            npm run package
+          fi
+
+          # Remove local webview UI node_modules to prevent accidental inclusion in the .vsix
+          rm -rf webview-ui/node_modules || true
+
+          # Create vsix artifact using @vscode/vsce (preferred over deprecated vsce)
+          npx --yes @vscode/vsce package --no-dependencies -o extension.vsix
+
+      - name: Create GitHub Release
+        if: steps.detect.outputs.changed == 'true'
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.detect.outputs.tag }}
+          name: Release ${{ steps.detect.outputs.version }}
+          body: ${{ steps.changelog.outputs.release_notes }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload .vsix to Release
+        if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json')
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./extension.vsix
+          asset_name: extension.vsix
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish VS Code Extension to Marketplace
+        if: steps.detect.outputs.changed == 'true' && startsWith(steps.detect.outputs.changed_file, 'package.json') && env.DRY_RUN != 'true'
+        env:
+          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+        run: |
+          set -e
+
+          if [ -z "${VSCE_TOKEN}" ]; then
+            echo "VSCE_TOKEN is not set. Skipping publish to Marketplace. If you want to publish automatically, add the VSCE_TOKEN secret."
+            exit 1
+          fi
+
+          echo "Publishing VS Code extension to Marketplace"
+
+          if command -v pnpm >/dev/null 2>&1; then
+            pnpm install --frozen-lockfile
+            pnpm run vscode:prepublish || pnpm run package
+          elif command -v npm >/dev/null 2>&1; then
+            npm ci
+            npm run vscode:prepublish || npm run package
+          fi
+
+          # Remove local webview UI node_modules to prevent accidental inclusion
+          rm -rf webview-ui/node_modules || true
+
+          # Publish using @vscode/vsce via npx (preferred to deprecated vsce)
+          npx --yes @vscode/vsce publish --pat "${VSCE_TOKEN}" --no-dependencies

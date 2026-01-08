@@ -1,26 +1,26 @@
-import { useState, useCallback, useEffect } from "react";
+import { FormatIndentMoreIcon } from "@/components/icons/FormatIndentMoreIcon";
+import { HorizonalArrowsIcon } from "@/components/icons/HorizonalArrowsIcon";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
-import {
-  MinusIcon,
-  PlusIcon,
-  CopyIcon,
-  DownloadIcon,
-  UploadIcon,
-  EraserIcon,
-} from "lucide-react";
+import { ButtonGroup } from "@/components/ui/button-group";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { ButtonGroup } from "@/components/ui/button-group";
-import { vscode } from "@/lib/vscode";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import toast from "@/lib/toast";
 import * as yaml from "js-yaml";
-import { HorizonalArrowsIcon } from "@/components/icons/HorizonalArrowsIcon";
-import { FormatIndentMoreIcon } from "@/components/icons/FormatIndentMoreIcon";
+import {
+  CopyIcon,
+  DownloadIcon,
+  EraserIcon,
+  MinusIcon,
+  PlusIcon,
+  UploadIcon,
+} from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 // Use js-yaml for proper YAML parsing and stringifying
 const yamlParser = {
@@ -101,7 +101,7 @@ export function JsonYamlPage() {
 
   const handleCopyOutput = () => {
     navigator.clipboard.writeText(outputText).then(() => {
-      vscode.toast.success("Copied to clipboard!");
+      toast.success("Copied to clipboard!");
     });
   };
 
@@ -131,7 +131,7 @@ export function JsonYamlPage() {
   const clearAll = () => {
     setInputText("");
     setOutputText("");
-    vscode.toast.info("Content cleared");
+    toast.info("Content cleared");
   };
 
   const increaseIndentation = () => {
@@ -143,12 +143,12 @@ export function JsonYamlPage() {
   };
 
   return (
-    <div className="w-full min-w-sm max-w-6xl p-4 space-y-4">
+    <main className="container mx-auto max-w-7xl space-y-4 px-4 py-8">
       <div className="flex flex-col gap-2">
         <h1 className="scroll-m-20 text-3xl font-semibold tracking-tight xl:text-4xl">
           JSON - YAML Converter
         </h1>
-        <p className="text-muted-foreground text-[1.05rem] text-balance sm:text-base">
+        <p className="text-[1.05rem] text-balance text-muted-foreground sm:text-base">
           Convert JSON documents to YAML and vice-versa with real-time preview
         </p>
       </div>
@@ -157,13 +157,13 @@ export function JsonYamlPage() {
         <h2 className="font-heading scroll-m-28 text-xl font-medium tracking-tight">
           Tool options
         </h2>
-        <div className="flex flex-row items-center flex-1 space-x-4">
+        <div className="flex flex-1 flex-row items-center space-x-4">
           <HorizonalArrowsIcon className="ml-4" />
-          <div className="flex flex-col flex-1">
-            <div className="items-center text-sm font-medium select-none flex w-fit gap-2 leading-snug">
+          <div className="flex flex-1 flex-col">
+            <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Conversion Direction
             </div>
-            <div className="text-muted-foreground text-sm leading-normal font-normal last:mt-0 nth-last-2:-mt-1 not-md:hidden">
+            <div className="text-sm leading-normal font-normal text-muted-foreground not-md:hidden last:mt-0 nth-last-2:-mt-1">
               Select the input format and desired output format
             </div>
           </div>
@@ -181,17 +181,17 @@ export function JsonYamlPage() {
           </Tabs>
         </div>
 
-        <div className="flex flex-row items-center flex-1 space-x-4">
+        <div className="flex flex-1 flex-row items-center space-x-4">
           <FormatIndentMoreIcon className="ml-4" />
-          <div className="flex flex-col flex-1">
-            <div className="items-center text-sm font-medium select-none flex w-fit gap-2 leading-snug">
+          <div className="flex flex-1 flex-col">
+            <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Indentation
             </div>
-            <div className="text-muted-foreground text-sm leading-normal font-normal last:mt-0 nth-last-2:-mt-1 not-md:hidden">
+            <div className="text-sm leading-normal font-normal text-muted-foreground not-md:hidden last:mt-0 nth-last-2:-mt-1">
               Number of spaces used for formatting output
             </div>
           </div>
-          <InputGroup className="w-fit outline-none border-none shadow-none">
+          <InputGroup className="w-fit border-none shadow-none outline-none">
             <InputGroupInput
               type="number"
               min="1"
@@ -200,7 +200,7 @@ export function JsonYamlPage() {
               onChange={(e) =>
                 setIndentation(Math.max(1, Math.min(8, Number(e.target.value))))
               }
-              className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-0 focus:ring-0 focus:outline-none"
+              className="[appearance:textfield] border-0 focus:ring-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
             <InputGroupAddon align="inline-end" className="p-0">
               <ButtonGroup className="w-fit">
@@ -226,11 +226,11 @@ export function JsonYamlPage() {
 
       <Separator />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {/* Input Section */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <div className="items-center text-sm font-medium select-none flex w-fit gap-2 leading-snug">
+            <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               {conversionDirection === "json2yaml"
                 ? "JSON Input"
                 : "YAML Input"}
@@ -273,7 +273,7 @@ export function JsonYamlPage() {
         {/* Output Section */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <div className="items-center text-sm font-medium select-none flex w-fit gap-2 leading-snug">
+            <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               {conversionDirection === "json2yaml"
                 ? "YAML Output"
                 : "JSON Output"}
@@ -302,11 +302,11 @@ export function JsonYamlPage() {
           <Textarea
             value={outputText}
             readOnly
-            className="min-h-50 font-mono text-sm bg-gray-50"
+            className="min-h-50 bg-gray-50 font-mono text-sm"
             placeholder="Converted output will appear here..."
           />
         </div>
       </div>
-    </div>
+    </main>
   );
 }
