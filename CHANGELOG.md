@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.0.5] - 2026-01-08
+## [0.0.6] - 2026-01-08
 
 ### Added
 
@@ -10,6 +10,10 @@
 ### Changed
 
 - Upgrade dependencies: jotai, react-router-dom, etc.
+
+### Fixed
+
+- release workflow
 
 ## [0.0.4] - 2026-01-08
 
