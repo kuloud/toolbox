@@ -1,21 +1,21 @@
-import { useState, useCallback, useEffect, useMemo, useRef } from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
 import { ClockAltIcon } from "@/components/icons/ClockAltIcon";
+import { HorizonalArrowsIcon } from "@/components/icons/HorizonalArrowsIcon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { HorizonalArrowsIcon } from "@/components/icons/HorizonalArrowsIcon";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { timezones } from "@/data/timezones";
+import { vscode } from "@/lib/vscode";
 import {
+  CalendarIcon,
+  ChevronDownIcon,
+  ClockIcon,
   CopyIcon,
   DownloadIcon,
-  CalendarIcon,
-  ClockIcon,
   SearchIcon,
   XIcon,
-  ChevronDownIcon,
 } from "lucide-react";
-import { vscode } from "@/lib/vscode";
-import { timezones } from "@/data/timezones";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 // Remove duplicate timezones and ensure unique values
 const uniqueTimezones = timezones.reduce(
@@ -175,7 +175,7 @@ function TimezoneSelect({
       <button
         type="button"
         onClick={handleTriggerClick}
-        className="flex items-center justify-between w-70 h-10 px-3 text-sm border border-input bg-background rounded-md shadow-sm hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="flex h-10 w-70 items-center justify-between rounded-md border border-input bg-background px-3 text-sm shadow-sm hover:bg-accent hover:text-accent-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
       >
         <span className="truncate">
           {selectedTimezone ? selectedTimezone.label : "Select timezone"}
@@ -185,23 +185,23 @@ function TimezoneSelect({
 
       {/* Dropdown Content */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-70 bg-popover text-popover-foreground rounded-md border shadow-md z-50">
+        <div className="absolute top-full left-0 z-50 mt-1 w-70 rounded-md border bg-popover text-popover-foreground shadow-md">
           {/* Search Input */}
-          <div className="relative p-2 border-b">
-            <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="relative border-b p-2">
+            <SearchIcon className="absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
             <Input
               ref={searchInputRef}
               placeholder="Search timezones..."
               value={searchTerm}
               onChange={handleSearchChange}
               onKeyDown={handleSearchKeyDown}
-              className="pl-10 pr-8 h-9 text-sm border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="h-9 border-0 pr-8 pl-10 text-sm focus-visible:ring-0 focus-visible:ring-offset-0"
             />
             {searchTerm && (
               <button
                 type="button"
                 onClick={clearSearch}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-foreground"
+                className="absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 transform text-muted-foreground hover:text-foreground"
               >
                 <XIcon className="h-4 w-4" />
               </button>
@@ -211,7 +211,7 @@ function TimezoneSelect({
           {/* Timezone List */}
           <div className="max-h-75 overflow-y-auto">
             {filteredTimezones.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-muted-foreground text-center">
+              <div className="px-4 py-3 text-center text-sm text-muted-foreground">
                 No timezones found for "{searchTerm}"
               </div>
             ) : (
@@ -220,7 +220,7 @@ function TimezoneSelect({
                   key={tz.value}
                   type="button"
                   onClick={() => handleSelect(tz.value)}
-                  className={`w-full px-3 py-2 text-sm text-left hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none ${
+                  className={`w-full px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none ${
                     value === tz.value ? "bg-accent text-accent-foreground" : ""
                   }`}
                 >
@@ -237,7 +237,7 @@ function TimezoneSelect({
 
           {/* Footer */}
           {searchTerm && filteredTimezones.length > 0 && (
-            <div className="p-2 border-t text-xs text-muted-foreground text-center">
+            <div className="border-t p-2 text-center text-xs text-muted-foreground">
               {filteredTimezones.length} timezone
               {filteredTimezones.length !== 1 ? "s" : ""} found
             </div>
@@ -482,12 +482,12 @@ Full Date: ${formattedResults.fullDate}`;
   };
 
   return (
-    <div className="w-full min-w-sm max-w-6xl p-4 space-y-4">
+    <main className="container mx-auto max-w-7xl space-y-4 px-4 py-8">
       <div className="flex flex-col gap-2">
         <h1 className="scroll-m-20 text-3xl font-semibold tracking-tight xl:text-4xl">
           Timestamp Converter
         </h1>
-        <p className="text-muted-foreground text-[1.05rem] text-balance sm:text-base">
+        <p className="text-[1.05rem] text-balance text-muted-foreground sm:text-base">
           Convert UNIX timestamps to and from plain dates
         </p>
       </div>
@@ -499,26 +499,26 @@ Full Date: ${formattedResults.fullDate}`;
           Tool Options
         </h2>
 
-        <div className="flex flex-row items-center flex-1 space-x-4">
+        <div className="flex flex-1 flex-row items-center space-x-4">
           <ClockAltIcon className="ml-4" />
-          <div className="flex flex-col flex-1">
-            <div className="items-center text-sm font-medium select-none flex w-fit gap-2 leading-snug">
+          <div className="flex flex-1 flex-col">
+            <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Timezone
             </div>
-            <div className="text-muted-foreground text-sm leading-normal font-normal last:mt-0 nth-last-2:-mt-1 not-md:hidden">
+            <div className="text-sm leading-normal font-normal text-muted-foreground not-md:hidden last:mt-0 nth-last-2:-mt-1">
               Current: {Intl.DateTimeFormat().resolvedOptions().timeZone}
             </div>
           </div>
           <TimezoneSelect value={timezone} onValueChange={setTimezone} />
         </div>
 
-        <div className="flex flex-row items-center flex-1 space-x-4">
+        <div className="flex flex-1 flex-row items-center space-x-4">
           <HorizonalArrowsIcon className="ml-4" />
-          <div className="flex flex-col flex-1">
-            <div className="items-center text-sm font-medium select-none flex w-fit gap-2 leading-snug">
+          <div className="flex flex-1 flex-col">
+            <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Conversion Direction
             </div>
-            <div className="text-muted-foreground text-sm leading-normal font-normal last:mt-0 nth-last-2:-mt-1 not-md:hidden">
+            <div className="text-sm leading-normal font-normal text-muted-foreground not-md:hidden last:mt-0 nth-last-2:-mt-1">
               Select the input format and desired output format
             </div>
           </div>
@@ -542,13 +542,13 @@ Full Date: ${formattedResults.fullDate}`;
           </Tabs>
         </div>
 
-        <div className="flex flex-row items-center flex-1 space-x-4">
-          <ClockIcon className="ml-4 w-4 h-4" />
-          <div className="flex flex-col flex-1">
-            <div className="items-center text-sm font-medium select-none flex w-fit gap-2 leading-snug">
+        <div className="flex flex-1 flex-row items-center space-x-4">
+          <ClockIcon className="ml-4 h-4 w-4" />
+          <div className="flex flex-1 flex-col">
+            <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Time Unit
             </div>
-            <div className="text-muted-foreground text-sm leading-normal font-normal last:mt-0 nth-last-2:-mt-1 not-md:hidden">
+            <div className="text-sm leading-normal font-normal text-muted-foreground not-md:hidden last:mt-0 nth-last-2:-mt-1">
               Select timestamp unit
             </div>
           </div>
@@ -571,7 +571,7 @@ Full Date: ${formattedResults.fullDate}`;
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="items-center text-sm font-medium select-none flex w-fit gap-2 leading-snug">
+          <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
             {conversionDirection === "timestampToDate" ? "Timestamp" : "Date"}
           </div>
           <div className="flex gap-2">
@@ -601,7 +601,7 @@ Full Date: ${formattedResults.fullDate}`;
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="items-center text-sm font-medium select-none flex w-fit gap-2 leading-snug">
+          <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
             {conversionDirection === "timestampToDate" ? "Date" : "Timestamp"}
           </div>
           <div className="flex gap-2">
@@ -614,10 +614,10 @@ Full Date: ${formattedResults.fullDate}`;
                 )
               }
             >
-              <CopyIcon className="w-4 h-4" />
+              <CopyIcon className="h-4 w-4" />
             </Button>
             <Button variant="outline" size="sm" onClick={downloadResults}>
-              <DownloadIcon className="w-4 h-4" />
+              <DownloadIcon className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -634,8 +634,8 @@ Full Date: ${formattedResults.fullDate}`;
 
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <div className="items-center text-sm font-medium select-none flex w-fit gap-2 leading-snug">
-                <CalendarIcon className="w-4 h-4" />
+              <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
+                <CalendarIcon className="h-4 w-4" />
                 Formatted Results
               </div>
             </div>
@@ -659,7 +659,7 @@ Full Date: ${formattedResults.fullDate}`;
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 <div>
                   <label className="text-sm font-medium">
                     Short Date ({timezone})
@@ -682,7 +682,7 @@ Full Date: ${formattedResults.fullDate}`;
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 <div>
                   <label className="text-sm font-medium">
                     Long Date ({timezone})
@@ -719,6 +719,6 @@ Full Date: ${formattedResults.fullDate}`;
           </div>
         </>
       )}
-    </div>
+    </main>
   );
 }
