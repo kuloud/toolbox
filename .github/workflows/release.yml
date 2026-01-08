@@ -73,43 +73,36 @@ jobs:
           set -e
           VERSION="${{ steps.detect.outputs.version }}"
 
-          # 检查是否有 CHANGELOG.md 文件
+          # Check if CHANGELOG.md exists
           if [ ! -f "CHANGELOG.md" ]; then
-            echo "No CHANGELOG.md found, using default release notes"
-            echo "release_notes=Automated release for version $VERSION" >> $GITHUB_OUTPUT
-            echo "has_changelog=false" >> $GITHUB_OUTPUT
+            echo "release_notes=Automated release for version $VERSION" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          # 使用 sed 和 awk 提取对应版本的 changelog
-          # 查找以版本号开头的行（支持 v1.2.3 或 1.2.3 格式）
-          CHANGELOG_ENTRY=$(awk -v version="$VERSION" '
-            BEGIN { capture=0; found=0 }
-            /^## \[?v?' version '\]?/ || /^## \[' version '\]/ {
-              capture=1
-              found=1
-              print "## " version
-              next
-            }
-            /^## \[?v?[0-9]+\.[0-9]+\.[0-9]+[^0-9]*\]?/ && capture {
-              capture=0
-            }
-            capture && /^## / { next }  # 跳过其他标题
-            capture { print }
-            END { if (!found) { print "Automated release for version " version } }
-          ' CHANGELOG.md | sed '/^$/N;/^\n$/D' | head -30)  # 限制输出长度
+          # Simple extraction using grep and sed
+          # Find the version header and get content until next version
+          VERSION_ESCAPED=$(echo "$VERSION" | sed 's/\./\\./g')
+          START_LINE=$(grep -n -E "^## \[?v?$VERSION_ESCAPED\]?" CHANGELOG.md | head -1 | cut -d: -f1)
 
-          if [ -z "$CHANGELOG_ENTRY" ] || [ "$CHANGELOG_ENTRY" = "Automated release for version $VERSION" ]; then
-            echo "No changelog entry found for version $VERSION"
-            echo "release_notes=Automated release for version $VERSION" >> $GITHUB_OUTPUT
-            echo "has_changelog=false" >> $GITHUB_OUTPUT
-          else
-            echo "Found changelog entry for version $VERSION"
-            echo "release_notes<<EOF" >> $GITHUB_OUTPUT
-            echo "$CHANGELOG_ENTRY" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-            echo "has_changelog=true" >> $GITHUB_OUTPUT
+          if [ -z "$START_LINE" ]; then
+            echo "release_notes=Automated release for version $VERSION" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+
+          # Get the next version header line
+          TOTAL_LINES=$(wc -l < CHANGELOG.md)
+          NEXT_VERSION_LINE=$(tail -n +$((START_LINE + 1)) CHANGELOG.md | grep -n "^## " | head -1 | cut -d: -f1)
+
+          if [ -n "$NEXT_VERSION_LINE" ]; then
+            END_LINE=$((START_LINE + NEXT_VERSION_LINE - 1))
+            CHANGELOG_ENTRY=$(sed -n "${START_LINE},${END_LINE}p" CHANGELOG.md | head -30)
+          else
+            CHANGELOG_ENTRY=$(tail -n +"${START_LINE}" CHANGELOG.md | head -30)
+          fi
+
+          echo "release_notes<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$CHANGELOG_ENTRY" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
       - name: Create tag and push
         if: steps.detect.outputs.changed == 'true'
