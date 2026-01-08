@@ -1,12 +1,10 @@
-// src/App.tsx
 import { Routes, Route } from "react-router-dom";
 import { JsonYamlPage } from "./pages/json-yaml-converter";
 import { TimestampPage } from "./pages/timestamp-converter";
 import { ImageFormatPage } from "./pages/image-converter";
-import { ThemeProvider } from "./providers/ThemeProvider";
 import { IndexPage } from "./pages";
 
-function AppContent() {
+function App() {
   return (
     <Routes>
       <Route index element={<IndexPage />} />
@@ -15,14 +13,6 @@ function AppContent() {
       <Route path="/view/image-converter" element={<ImageFormatPage />} />
       <Route path="*" element={<IndexPage />} />
     </Routes>
-  );
-}
-
-function App() {
-  return (
-    // <ThemeProvider>
-    <AppContent />
-    // </ThemeProvider>
   );
 }
 

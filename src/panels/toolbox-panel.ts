@@ -194,6 +194,14 @@ export class ToolboxPanel {
 
     const currentTheme = this._getThemeName(window.activeColorTheme.kind);
 
+    console.log("[_getWebviewContent]", {
+      __INITIAL_DATA__: JSON.stringify({
+        route: initialRoute,
+        viewType: this._panel.viewType,
+        initialTheme: currentTheme,
+      }),
+    });
+
     // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
     return /*html*/ `
       <!DOCTYPE html>
@@ -224,14 +232,11 @@ export class ToolboxPanel {
   private _setWebviewMessageListener(webview: Webview) {
     webview.onDidReceiveMessage(
       (message: any) => {
+        console.log("[onDidReceiveMessage]", { message });
         const command = message.command;
         const text = message.text;
 
         switch (command) {
-          case "hello":
-            // Code that should run in response to the hello message command
-            window.showInformationMessage(text);
-            return;
           case "showInformationMessage":
             window.showInformationMessage(text);
             break;
@@ -240,6 +245,9 @@ export class ToolboxPanel {
             break;
           case "showErrorMessage":
             window.showErrorMessage(text);
+            break;
+          case "getTheme":
+            this._updateTheme();
             break;
         }
       },

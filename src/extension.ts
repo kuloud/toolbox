@@ -15,6 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
   const openToolDisposable = vscode.commands.registerCommand(
     "toolbox.open",
     (toolId: string) => {
+      console.log("[openTool]", { toolId });
       if (!toolId) {
         ToolboxPanel.render(context.extensionUri);
         return;

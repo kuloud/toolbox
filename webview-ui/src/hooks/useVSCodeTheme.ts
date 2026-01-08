@@ -1,3 +1,4 @@
+import { vscode } from "@/lib/vscode";
 import { useState, useEffect, useCallback } from "react";
 
 export type Theme = "light" | "dark";
@@ -11,7 +12,7 @@ interface ThemeContext {
 export function useVSCodeTheme(): ThemeContext {
   const [theme, setTheme] = useState<Theme>(() => {
     const initialTheme = (window as any).__INITIAL_DATA__?.initialTheme;
-    console.log("", { initialTheme });
+    console.log("[useVSCodeTheme]", { initialTheme });
     return initialTheme || "light";
   });
 
@@ -19,27 +20,13 @@ export function useVSCodeTheme(): ThemeContext {
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
       if (message.command === "themeChanged") {
-        console.log("handleMessage---->", event);
-        setTheme(message.theme);
-
-        // 更新 HTML 属性
-        document.documentElement.setAttribute("data-theme", message.theme);
-
-        // 更新 Tailwind 的 dark 类
-        if (message.theme === "dark") {
-          document.documentElement.classList.add("dark");
-        } else {
-          document.documentElement.classList.remove("dark");
-        }
+        handleSetTheme(message.theme);
       }
     };
 
     window.addEventListener("message", handleMessage);
 
-    if (typeof acquireVsCodeApi !== "undefined") {
-      const vscode = acquireVsCodeApi();
-      vscode.postMessage({ command: "getTheme" });
-    }
+    vscode.postMessage({ command: "getTheme" });
 
     return () => {
       window.removeEventListener("message", handleMessage);
@@ -49,7 +36,6 @@ export function useVSCodeTheme(): ThemeContext {
   const handleSetTheme = useCallback((newTheme: Theme) => {
     setTheme(newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
-
     if (newTheme === "dark") {
       document.documentElement.classList.add("dark");
     } else {

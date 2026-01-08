@@ -1,4 +1,7 @@
 {
-  "plugins": ["prettier-plugin-tailwindcss"],
+  "plugins": [
+    "prettier-plugin-organize-imports",
+    "prettier-plugin-tailwindcss"
+  ],
   "tailwindStylesheet": "./webview-ui/src/style.css"
 }

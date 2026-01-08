@@ -11,14 +11,10 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const theme = useVSCodeTheme();
-
-  // debug: expose theme in window and log
-  (window as any).__THEME_DEBUG__ = theme;
-  console.log("ThemeProvider render", theme);
+  const themeContext = useVSCodeTheme();
 
   return (
-    <ThemeContext.Provider value={theme}>
+    <ThemeContext.Provider value={themeContext}>
       <ErrorBoundary>{children}</ErrorBoundary>
     </ThemeContext.Provider>
   );
