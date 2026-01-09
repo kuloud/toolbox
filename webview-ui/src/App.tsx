@@ -3,6 +3,7 @@ import { Outlet, Route, Routes } from "react-router-dom";
 import { Provider as JotaiProvider } from "jotai";
 import { Toaster } from "./components/ui/sonner";
 import DashboardPage from "./pages/dashboard";
+import { DashboardHeader } from "./components/dashboard-header";
 import { ImageFormatPage } from "./pages/image-converter";
 import { JsonYamlPage } from "./pages/json-yaml-converter";
 import { TimestampPage } from "./pages/timestamp-converter";
@@ -12,8 +13,11 @@ const Layout = () => {
   return (
     <JotaiProvider>
       <ThemeProvider>
-        <main>
-          <Outlet />
+        <main className="bg-background">
+          <DashboardHeader />
+          <div className="mx-auto max-w-7xl space-y-4 px-4 py-8">
+            <Outlet />
+          </div>
         </main>
         <Toaster />
       </ThemeProvider>

@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { tools } from "@/data/tools";
 import { activeCategoryAtom } from "@/stores/tools";
 import { useAtom } from "jotai";
-import { useMemo } from "react";
+import { useResetAtom } from "jotai/utils";
+import { useEffect, useMemo } from "react";
 
 function generateCategoriesFromTools() {
   const categorySet = new Set<string>();
@@ -28,7 +29,14 @@ function generateCategoriesFromTools() {
 
 export function CategoryFilter() {
   const [activeCategory, setActiveCategory] = useAtom(activeCategoryAtom);
+  const resetCategory = useResetAtom(activeCategoryAtom);
   const categories = useMemo(() => generateCategoriesFromTools(), []);
+
+  useEffect(() => {
+    return () => {
+      resetCategory();
+    };
+  }, []);
 
   return (
     <div className="flex flex-wrap gap-2">

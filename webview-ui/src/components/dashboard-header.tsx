@@ -1,14 +1,18 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { Command, Github, Terminal } from "lucide-react";
+import { Terminal } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function DashboardHeader() {
+  const navigate = useNavigate();
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
-      <div className="container mx-auto max-w-7xl px-4">
+      <div className="mx-auto max-w-7xl px-4">
         <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-3">
+          <div
+            className="flex cursor-pointer items-center gap-3 hover:opacity-80"
+            onClick={() => {
+              navigate("/");
+            }}
+          >
             <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-primary/20 bg-primary/10">
               <Terminal className="h-5 w-5 text-primary" />
             </div>
@@ -16,7 +20,7 @@ export function DashboardHeader() {
               Dev Toolbox
             </span>
           </div>
-
+          {/* 
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
@@ -33,7 +37,7 @@ export function DashboardHeader() {
             >
               <Github className="h-5 w-5" />
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
     </header>

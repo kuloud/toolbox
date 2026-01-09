@@ -483,12 +483,12 @@ Full Date: ${formattedResults.fullDate}`;
   };
 
   return (
-    <main className="container mx-auto max-w-7xl space-y-4 px-4 py-8">
+    <>
       <div className="flex flex-col gap-2">
-        <h1 className="scroll-m-20 text-3xl font-semibold tracking-tight xl:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-balance text-foreground md:text-4xl">
           Image Format Converter
         </h1>
-        <p className="text-[1.05rem] text-balance text-muted-foreground sm:text-base">
+        <p className="text-lg text-muted-foreground">
           Convert images to different formats
         </p>
       </div>
@@ -720,6 +720,6 @@ Full Date: ${formattedResults.fullDate}`;
           </div>
         </>
       )}
-    </main>
+    </>
   );
 }

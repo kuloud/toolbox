@@ -1,49 +1,60 @@
-"use client"
+"use client";
 
-import { type LucideIcon, ArrowRight } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card";
+import { type LucideIcon, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface Tool {
-  id: string
-  name: string
-  description: string
-  icon: LucideIcon
-  category: string
-  color: string
-  bgColor: string
-  borderColor: string
+  id: string;
+  name: string;
+  description: string;
+  icon: LucideIcon;
+  category: string;
+  color: string;
+  bgColor: string;
+  borderColor: string;
 }
 
 interface ToolCardProps {
-  tool: Tool
+  tool: Tool;
 }
 
 export function ToolCard({ tool }: ToolCardProps) {
-  const Icon = tool.icon
+  const navigate = useNavigate();
+  const Icon = tool.icon;
+
+  const handleToolOpen = () => {
+    navigate(`/view/${tool.id}`);
+  };
 
   return (
     <Card
-      className={`group cursor-pointer bg-card border-border hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5`}
+      className={`group cursor-pointer border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5`}
+      onClick={handleToolOpen}
     >
       <CardContent className="p-5">
         <div className="flex flex-col gap-4">
           <div
-            className={`w-11 h-11 rounded-lg flex items-center justify-center ${tool.bgColor} border ${tool.borderColor}`}
+            className={`flex h-11 w-11 items-center justify-center rounded-lg ${tool.bgColor} border ${tool.borderColor}`}
           >
-            <Icon className={`w-5 h-5 ${tool.color}`} />
+            <Icon className={`h-5 w-5 ${tool.color}`} />
           </div>
 
           <div className="space-y-1.5">
-            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">{tool.name}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{tool.description}</p>
+            <h3 className="font-semibold text-foreground transition-colors group-hover:text-primary">
+              {tool.name}
+            </h3>
+            <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+              {tool.description}
+            </p>
           </div>
 
-          <div className="flex items-center gap-1.5 text-sm text-muted-foreground group-hover:text-primary transition-colors">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors group-hover:text-primary">
             <span>Open tool</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

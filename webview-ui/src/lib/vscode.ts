@@ -101,7 +101,11 @@ class VSCodeAPIWrapper {
   };
 
   public isInVSCode(): boolean {
-    return typeof this.vsCodeApi !== "undefined";
+    return (
+      typeof acquireVsCodeApi !== "undefined" ||
+      (window.parent !== window &&
+        document.referrer.includes("vscode-webview://"))
+    );
   }
 }
 

@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { ToolItem } from "../types/tree-item";
+import { getToolIconPath } from "../utils/icon";
 
 export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem> {
   private toolboxData: ToolItem[] = [];
@@ -41,7 +42,7 @@ export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem
     element: ToolItem,
     token: vscode.CancellationToken,
   ): vscode.ProviderResult<vscode.TreeItem> {
-    return element;
+    return element || item;
   }
 
   private loadToolboxData() {
@@ -55,7 +56,10 @@ export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem
           {
             id: "json-yaml",
             label: "JSON - YAML",
-            iconPath: this.getToolIconPath("horizontal-arrows-symbolic"),
+            iconPath: getToolIconPath(
+              this.context,
+              "horizontal-arrows-symbolic",
+            ),
             contextValue: "tool",
             command: {
               command: "toolbox.open",
@@ -66,7 +70,7 @@ export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem
           {
             id: "timestamp",
             label: "Timestamp",
-            iconPath: this.getToolIconPath("calendar-symbolic"),
+            iconPath: getToolIconPath(this.context, "calendar-symbolic"),
             contextValue: "tool",
             command: {
               command: "toolbox.open",
@@ -85,7 +89,7 @@ export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem
           {
             id: "image-converter",
             label: "Image Format Converter",
-            iconPath: this.getToolIconPath("image-symbolic"),
+            iconPath: getToolIconPath(this.context, "image-symbolic"),
             contextValue: "tool",
             command: {
               command: "toolbox.open",
@@ -96,41 +100,5 @@ export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem
         ],
       },
     ];
-  }
-
-  private getToolIconPath(iconName: string): vscode.IconPath | undefined {
-    return this.getIconPath("tools", iconName);
-  }
-
-  private getIconPath(
-    path: string,
-    iconName: string,
-  ): vscode.IconPath | undefined {
-    try {
-      const fileName = iconName.endsWith(".svg") ? iconName : `${iconName}.svg`;
-      const lightIconPath = vscode.Uri.joinPath(
-        this.context.extensionUri,
-        "media",
-        "icons",
-        path,
-        "light",
-        fileName,
-      );
-      const darkIconPath = vscode.Uri.joinPath(
-        this.context.extensionUri,
-        "media",
-        "icons",
-        path,
-        "dark",
-        fileName,
-      );
-      return {
-        light: lightIconPath,
-        dark: darkIconPath,
-      };
-    } catch (error) {
-      console.warn(`Could not load icon ${iconName}:`, error);
-      return undefined;
-    }
   }
 }
