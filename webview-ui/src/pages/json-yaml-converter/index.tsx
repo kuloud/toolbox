@@ -1,5 +1,3 @@
-import { FormatIndentMoreIcon } from "@/components/icons/FormatIndentMoreIcon";
-import { HorizonalArrowsIcon } from "@/components/icons/HorizonalArrowsIcon";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -13,9 +11,11 @@ import { Textarea } from "@/components/ui/textarea";
 import toast from "@/lib/toast";
 import * as yaml from "js-yaml";
 import {
+  ArrowLeftRight,
   CopyIcon,
   DownloadIcon,
   EraserIcon,
+  Indent,
   MinusIcon,
   PlusIcon,
   UploadIcon,
@@ -157,8 +157,8 @@ export function JsonYamlPage() {
         <h2 className="font-heading scroll-m-28 text-xl font-medium tracking-tight">
           Tool options
         </h2>
-        <div className="flex flex-1 flex-row items-center space-x-4">
-          <HorizonalArrowsIcon className="ml-4" />
+        <div className="flex flex-1 flex-row items-center space-x-4 px-4">
+          <ArrowLeftRight />
           <div className="flex flex-1 flex-col">
             <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Conversion Direction
@@ -181,8 +181,8 @@ export function JsonYamlPage() {
           </Tabs>
         </div>
 
-        <div className="flex flex-1 flex-row items-center space-x-4">
-          <FormatIndentMoreIcon className="ml-4" />
+        <div className="flex flex-1 flex-row items-center space-x-4 px-4">
+          <Indent />
           <div className="flex flex-1 flex-col">
             <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Indentation

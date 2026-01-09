@@ -12,7 +12,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: "build",
+    outDir: "../out",
     rollupOptions: {
       output: {
         entryFileNames: `assets/[name].js`,

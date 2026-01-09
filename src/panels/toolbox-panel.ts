@@ -1,14 +1,14 @@
 import {
+  ColorThemeKind,
   Disposable,
+  Uri,
+  ViewColumn,
   Webview,
   WebviewPanel,
   window,
-  Uri,
-  ViewColumn,
-  ColorThemeKind,
 } from "vscode";
-import { getUri } from "../utils/uri";
 import { getNonce } from "../utils/nonce";
+import { getUri } from "../utils/uri";
 
 /**
  * This class manages the state and behavior of HelloWorld webview panels.
@@ -95,11 +95,7 @@ export class ToolboxPanel {
         {
           // Enable JavaScript in the webview
           enableScripts: true,
-          // Restrict the webview to only load resources from the `out` and `webview-ui/build` directories
-          localResourceRoots: [
-            Uri.joinPath(extensionUri, "out"),
-            Uri.joinPath(extensionUri, "webview-ui/build"),
-          ],
+          localResourceRoots: [Uri.joinPath(extensionUri, "out")],
         },
       );
 
@@ -177,15 +173,13 @@ export class ToolboxPanel {
   ) {
     // The CSS file from the React build output
     const stylesUri = getUri(webview, extensionUri, [
-      "webview-ui",
-      "build",
+      "out",
       "assets",
       "index.css",
     ]);
     // The JS file from the React build output
     const scriptUri = getUri(webview, extensionUri, [
-      "webview-ui",
-      "build",
+      "out",
       "assets",
       "index.js",
     ]);

@@ -1,5 +1,3 @@
-import { ClockAltIcon } from "@/components/icons/ClockAltIcon";
-import { HorizonalArrowsIcon } from "@/components/icons/HorizonalArrowsIcon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -7,12 +5,14 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { timezones } from "@/data/timezones";
 import toast from "@/lib/toast";
 import {
+  ArrowLeftRight,
   CalendarIcon,
   ChevronDownIcon,
-  ClockIcon,
+  Clock,
   CopyIcon,
   DownloadIcon,
   SearchIcon,
+  TicketMinus,
   XIcon,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -499,8 +499,8 @@ Full Date: ${formattedResults.fullDate}`;
           Tool Options
         </h2>
 
-        <div className="flex flex-1 flex-row items-center space-x-4">
-          <ClockAltIcon className="ml-4" />
+        <div className="flex flex-1 flex-row items-center space-x-4 px-4">
+          <Clock />
           <div className="flex flex-1 flex-col">
             <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Timezone
@@ -512,8 +512,8 @@ Full Date: ${formattedResults.fullDate}`;
           <TimezoneSelect value={timezone} onValueChange={setTimezone} />
         </div>
 
-        <div className="flex flex-1 flex-row items-center space-x-4">
-          <HorizonalArrowsIcon className="ml-4" />
+        <div className="flex flex-1 flex-row items-center space-x-4 px-4">
+          <ArrowLeftRight />
           <div className="flex flex-1 flex-col">
             <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Conversion Direction
@@ -542,8 +542,8 @@ Full Date: ${formattedResults.fullDate}`;
           </Tabs>
         </div>
 
-        <div className="flex flex-1 flex-row items-center space-x-4">
-          <ClockIcon className="ml-4 h-4 w-4" />
+        <div className="flex flex-1 flex-row items-center space-x-4 px-4">
+          <TicketMinus />
           <div className="flex flex-1 flex-col">
             <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Time Unit

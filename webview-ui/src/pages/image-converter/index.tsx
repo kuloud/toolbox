@@ -1,18 +1,16 @@
-import { ClockAltIcon } from "@/components/icons/ClockAltIcon";
-import { HorizonalArrowsIcon } from "@/components/icons/HorizonalArrowsIcon";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { timezones } from "@/data/timezones";
 import toast from "@/lib/toast";
 
 import {
   CalendarIcon,
   ChevronDownIcon,
-  ClockIcon,
   CopyIcon,
   DownloadIcon,
+  Image,
   SearchIcon,
   XIcon,
 } from "lucide-react";
@@ -501,7 +499,7 @@ Full Date: ${formattedResults.fullDate}`;
         </h2>
 
         <div className="flex flex-1 flex-row items-center space-x-4">
-          <ClockAltIcon className="ml-4" />
+          <Image className="ml-4 size-4" />
           <div className="flex flex-1 flex-col">
             <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Format
@@ -511,60 +509,6 @@ Full Date: ${formattedResults.fullDate}`;
             </div>
           </div>
           <TimezoneSelect value={timezone} onValueChange={setTimezone} />
-        </div>
-
-        <div className="flex flex-1 flex-row items-center space-x-4">
-          <HorizonalArrowsIcon className="ml-4" />
-          <div className="flex flex-1 flex-col">
-            <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
-              Conversion Direction
-            </div>
-            <div className="text-sm leading-normal font-normal text-muted-foreground not-md:hidden last:mt-0 nth-last-2:-mt-1">
-              Select the input format and desired output format
-            </div>
-          </div>
-          <Tabs
-            value={conversionDirection}
-            onValueChange={(value) =>
-              setConversionDirection(
-                value as "timestampToDate" | "dateToTimestamp",
-              )
-            }
-            className="w-fit"
-          >
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="timestampToDate">
-                Timestamp → Date
-              </TabsTrigger>
-              <TabsTrigger value="dateToTimestamp">
-                Date → Timestamp
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
-
-        <div className="flex flex-1 flex-row items-center space-x-4">
-          <ClockIcon className="ml-4 h-4 w-4" />
-          <div className="flex flex-1 flex-col">
-            <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
-              Time Unit
-            </div>
-            <div className="text-sm leading-normal font-normal text-muted-foreground not-md:hidden last:mt-0 nth-last-2:-mt-1">
-              Select timestamp unit
-            </div>
-          </div>
-          <Tabs
-            value={unit}
-            onValueChange={(value) =>
-              setUnit(value as "second" | "millisecond")
-            }
-            className="w-fit"
-          >
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="second">Seconds</TabsTrigger>
-              <TabsTrigger value="millisecond">Milliseconds</TabsTrigger>
-            </TabsList>
-          </Tabs>
         </div>
       </div>
 

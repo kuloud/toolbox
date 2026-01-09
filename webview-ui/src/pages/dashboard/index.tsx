@@ -6,7 +6,7 @@ import { ToolsGrid } from "./components/tools-grid";
 export default function DashboardPage() {
   return (
     <>
-      <div className="mb-8 space-y-2">
+      <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-bold tracking-tight text-balance text-foreground md:text-4xl">
           Dev Toolbox
         </h1>
