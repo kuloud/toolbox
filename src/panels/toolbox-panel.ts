@@ -1,14 +1,16 @@
 import {
+  ColorThemeKind,
   Disposable,
+  env,
+  Uri,
+  ViewColumn,
   Webview,
   WebviewPanel,
   window,
-  Uri,
-  ViewColumn,
-  ColorThemeKind,
+  workspace,
 } from "vscode";
-import { getUri } from "../utils/uri";
 import { getNonce } from "../utils/nonce";
+import { getUri } from "../utils/uri";
 
 /**
  * This class manages the state and behavior of HelloWorld webview panels.
@@ -95,11 +97,7 @@ export class ToolboxPanel {
         {
           // Enable JavaScript in the webview
           enableScripts: true,
-          // Restrict the webview to only load resources from the `out` and `webview-ui/build` directories
-          localResourceRoots: [
-            Uri.joinPath(extensionUri, "out"),
-            Uri.joinPath(extensionUri, "webview-ui/build"),
-          ],
+          localResourceRoots: [Uri.joinPath(extensionUri, "out")],
         },
       );
 
@@ -177,18 +175,18 @@ export class ToolboxPanel {
   ) {
     // The CSS file from the React build output
     const stylesUri = getUri(webview, extensionUri, [
-      "webview-ui",
-      "build",
+      "out",
       "assets",
       "index.css",
     ]);
     // The JS file from the React build output
     const scriptUri = getUri(webview, extensionUri, [
-      "webview-ui",
-      "build",
+      "out",
       "assets",
       "index.js",
     ]);
+
+    const resRootUri = getUri(webview, extensionUri, ["out"]).toString();
 
     const nonce = getNonce();
 
@@ -199,6 +197,7 @@ export class ToolboxPanel {
         route: initialRoute,
         viewType: this._panel.viewType,
         initialTheme: currentTheme,
+        resRootUri,
       }),
     });
 
@@ -209,13 +208,13 @@ export class ToolboxPanel {
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src ${webview.cspSource} blob: data: vscode-webview:; img-src ${webview.cspSource} data: https:; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
           <link rel="stylesheet" type="text/css" href="${stylesUri}">
           <title>Dev Toolbox</title>
         </head>
         <body>
           <div id="root"></div>
-          <script nonce="${nonce}">window.__INITIAL_DATA__ = ${JSON.stringify({ route: initialRoute, viewType: this._panel.viewType, initialTheme: currentTheme })};</script>
+          <script nonce="${nonce}">window.__INITIAL_DATA__ = ${JSON.stringify({ route: initialRoute, viewType: this._panel.viewType, initialTheme: currentTheme, resRootUri })};</script>
           <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
         </body>
       </html>
@@ -249,6 +248,55 @@ export class ToolboxPanel {
           case "getTheme":
             this._updateTheme();
             break;
+
+          // Save image (base64 or data URL) to user-chosen location
+          case "saveImage": {
+            (async () => {
+              try {
+                const base64 = message.data as string;
+                const name = (message.name as string) || "image.png";
+
+                // Prompt user for filename/location
+                const uri = await window.showSaveDialog({
+                  defaultUri: Uri.file(name),
+                  filters: { Images: [name.split(".").pop() || "png"] },
+                });
+
+                if (!uri) {
+                  return;
+                }
+
+                // Strip data URL prefix if present
+                const commaIndex = base64.indexOf(",");
+                const raw =
+                  commaIndex >= 0 ? base64.slice(commaIndex + 1) : base64;
+                const buffer = Buffer.from(raw, "base64");
+
+                await workspace.fs.writeFile(uri, Uint8Array.from(buffer));
+                window.showInformationMessage(`Image saved to ${uri.fsPath}`);
+              } catch (err) {
+                console.error("Failed to save image from webview:", err);
+                window.showErrorMessage("Failed to save image");
+              }
+            })();
+            break;
+          }
+
+          // Copy image data URL/base64 into the clipboard as text (best-effort)
+          case "copyImage": {
+            (async () => {
+              try {
+                const data = message.data as string;
+                // Write the base64/data URL to VS Code clipboard as text
+                await env.clipboard.writeText(data);
+                window.showInformationMessage("Image data copied to clipboard");
+              } catch (err) {
+                console.error("Failed to copy image from webview:", err);
+                window.showErrorMessage("Failed to copy image");
+              }
+            })();
+            break;
+          }
         }
       },
       undefined,

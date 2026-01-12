@@ -18,3 +18,19 @@ export function getUri(
 ) {
   return webview.asWebviewUri(Uri.joinPath(extensionUri, ...pathList));
 }
+
+/**
+ * Returns a string URL for an image resource that can be used directly in
+ * webview CSS or HTML (e.g. inside `url(...)`).
+ *
+ * @param webview A reference to the extension webview
+ * @param extensionUri The URI of the directory containing the extension
+ * @param pathList Path segments to the image file
+ */
+export function getImageUri(
+  webview: Webview,
+  extensionUri: Uri,
+  pathList: string[],
+) {
+  return webview.asWebviewUri(Uri.joinPath(extensionUri, ...pathList)).toString();
+}

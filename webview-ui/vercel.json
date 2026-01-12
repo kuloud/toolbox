@@ -1,0 +1,5 @@
+{
+  "buildCommand": "pnpm build && mkdir -p dist && cp -r ../out/* dist/",
+  "outputDirectory": "dist",
+  "installCommand": "pnpm install"
+}

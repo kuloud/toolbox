@@ -1,5 +1,3 @@
-import { FormatIndentMoreIcon } from "@/components/icons/FormatIndentMoreIcon";
-import { HorizonalArrowsIcon } from "@/components/icons/HorizonalArrowsIcon";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import {
@@ -13,9 +11,11 @@ import { Textarea } from "@/components/ui/textarea";
 import toast from "@/lib/toast";
 import * as yaml from "js-yaml";
 import {
+  ArrowLeftRight,
   CopyIcon,
   DownloadIcon,
   EraserIcon,
+  Indent,
   MinusIcon,
   PlusIcon,
   UploadIcon,
@@ -143,12 +143,12 @@ export function JsonYamlPage() {
   };
 
   return (
-    <main className="container mx-auto max-w-7xl space-y-4 px-4 py-8">
+    <>
       <div className="flex flex-col gap-2">
-        <h1 className="scroll-m-20 text-3xl font-semibold tracking-tight xl:text-4xl">
+        <h1 className="text-3xl font-bold tracking-tight text-balance text-foreground md:text-4xl">
           JSON - YAML Converter
         </h1>
-        <p className="text-[1.05rem] text-balance text-muted-foreground sm:text-base">
+        <p className="text-lg text-muted-foreground">
           Convert JSON documents to YAML and vice-versa with real-time preview
         </p>
       </div>
@@ -157,8 +157,8 @@ export function JsonYamlPage() {
         <h2 className="font-heading scroll-m-28 text-xl font-medium tracking-tight">
           Tool options
         </h2>
-        <div className="flex flex-1 flex-row items-center space-x-4">
-          <HorizonalArrowsIcon className="ml-4" />
+        <div className="flex flex-1 flex-row items-center space-x-4 px-4">
+          <ArrowLeftRight />
           <div className="flex flex-1 flex-col">
             <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Conversion Direction
@@ -181,8 +181,8 @@ export function JsonYamlPage() {
           </Tabs>
         </div>
 
-        <div className="flex flex-1 flex-row items-center space-x-4">
-          <FormatIndentMoreIcon className="ml-4" />
+        <div className="flex flex-1 flex-row items-center space-x-4 px-4">
+          <Indent />
           <div className="flex flex-1 flex-col">
             <div className="flex w-fit items-center gap-2 text-sm leading-snug font-medium select-none">
               Indentation
@@ -307,6 +307,6 @@ export function JsonYamlPage() {
           />
         </div>
       </div>
-    </main>
+    </>
   );
 }

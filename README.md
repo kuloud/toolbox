@@ -8,9 +8,17 @@ A comprehensive Visual Studio Code extension providing essential developer tools
 
 • JSON ↔ YAML: Seamlessly convert between JSON and YAML formats
 
+
 ⏰ Time Utilities
 
 • Timestamp Conversion: Convert between Unix timestamps and human-readable dates
+
+
+🖼️ Image Processing
+
+• Format Conversion: Convert images between JPG, PNG, WebP, SVG, GIF, BMP formats
+• Quality Optimization: Adjust compression level, DPI settings, and file size
+
 
 ## Requirements
 

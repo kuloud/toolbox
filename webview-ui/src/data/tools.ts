@@ -1,37 +1,37 @@
-import { Binary, Braces } from "lucide-react";
+import { Braces, Image, Timer } from "lucide-react";
 
 export const tools = [
   {
-    id: "json-formatter",
-    name: "JSON Formatter",
+    id: "json-yaml",
+    name: "JSON - YAML Converter",
     description:
-      "Format, validate and beautify JSON data with syntax highlighting",
+      "Convert JSON documents to YAML and vice-versa with real-time preview",
     icon: Braces,
-    category: "formatting",
+    category: "converters",
     color: "text-emerald-400",
     bgColor: "bg-emerald-400/10",
     borderColor: "border-emerald-400/20",
   },
   {
-    id: "base64",
-    name: "Base64 Encoder",
-    description: "Encode and decode Base64 strings instantly",
-    icon: Binary,
-    category: "encoding",
+    id: "timestamp",
+    name: "Timestamp Converter",
+    description: "Convert UNIX timestamps to and from plain dates",
+    icon: Timer,
+    category: "converters",
     color: "text-sky-400",
     bgColor: "bg-sky-400/10",
     borderColor: "border-sky-400/20",
   },
-  // {
-  //   id: "uuid-generator",
-  //   name: "UUID Generator",
-  //   description: "Generate unique UUIDs (v1, v4, v5) with one click",
-  //   icon: Hash,
-  //   category: "generators",
-  //   color: "text-amber-400",
-  //   bgColor: "bg-amber-400/10",
-  //   borderColor: "border-amber-400/20",
-  // },
+  {
+    id: "image-converter",
+    name: "Image Format Converter",
+    description: "Convert images to different formats",
+    icon: Image,
+    category: "graphics",
+    color: "text-amber-400",
+    bgColor: "bg-amber-400/10",
+    borderColor: "border-amber-400/20",
+  },
   // {
   //   id: "color-picker",
   //   name: "Color Picker",
@@ -168,6 +168,6 @@ export const categories = [
   { id: "all", label: "All Tools" },
   { id: "encoding", label: "Encoding" },
   { id: "formatting", label: "Formatting" },
-  { id: "generators", label: "Generators" },
+  { id: "graphics", label: "Graphics" },
   { id: "converters", label: "Converters" },
 ];
