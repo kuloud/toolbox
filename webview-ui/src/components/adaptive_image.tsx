@@ -1,4 +1,4 @@
-import { vscode, getImageUri } from "@/lib/vscode";
+import { getImageUri } from "@/lib/utils/image";
 import { useEffect, useState } from "react";
 
 interface AdaptiveImageProps {
@@ -17,11 +17,9 @@ export function AdaptiveImage({
   const [actualSrc, setActualSrc] = useState<string>("");
 
   useEffect(() => {
-    if (vscode.isInVSCode()) {
-      setActualSrc(getImageUri(src));
-    } else {
-      setActualSrc(src);
-    }
+    const imageUri = getImageUri(src);
+    console.log("--->", { imageUri });
+    setActualSrc(imageUri);
   }, [src]);
 
   return (
