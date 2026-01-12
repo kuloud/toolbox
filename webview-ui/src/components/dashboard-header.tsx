@@ -53,11 +53,10 @@ export function DashboardHeader() {
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-72"
+                className="w-72 overflow-y-auto"
                 align="end"
                 style={{
                   maxHeight: "min(calc(100vh - 100px), 800px)",
-                  overflowY: "auto",
                 }}
               >
                 <div className="space-y-4">

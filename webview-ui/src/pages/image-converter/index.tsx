@@ -1,24 +1,30 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 
+import toast from "@/lib/toast";
 import {
-  ImageIcon,
-  UploadIcon,
-  DownloadIcon,
   CopyIcon,
-  RotateCwIcon,
-  RotateCcwIcon,
-  FlipVerticalIcon,
+  DownloadIcon,
   FlipHorizontalIcon,
-  Trash2Icon,
+  FlipVerticalIcon,
+  ImageIcon,
   RefreshCwIcon,
+  RotateCcwIcon,
+  RotateCwIcon,
+  Trash2Icon,
+  UploadIcon,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import toast from "@/lib/toast";
 
 // Supported image formats
 const SUPPORTED_FORMATS = [
@@ -76,12 +82,12 @@ export function ImageFormatPage() {
       setImageUrl(url);
       setImageName(file.name.replace(/\.[^/.]+$/, "")); // Remove extension
       setOriginalImageSize(file.size);
-      
+
       // Reset transformations
       setRotation(0);
       setFlipHorizontal(false);
       setFlipVertical(false);
-      
+
       // Load image to get dimensions
       const img = new Image();
       img.onload = () => {
@@ -98,11 +104,11 @@ export function ImageFormatPage() {
   // Handle image URL input
   const handleImageUrlInput = (url: string) => {
     if (!url.trim()) return;
-    
+
     setImageUrl(url);
     setImageName("remote-image");
     setOriginalImageSize(0);
-    
+
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
@@ -125,7 +131,7 @@ export function ImageFormatPage() {
     try {
       const img = new Image();
       img.crossOrigin = "anonymous";
-      
+
       await new Promise((resolve, reject) => {
         img.onload = resolve;
         img.onerror = reject;
@@ -145,25 +151,25 @@ export function ImageFormatPage() {
 
       // Apply transformations
       ctx.save();
-      
+
       // Translate to center
       ctx.translate(canvas.width / 2, canvas.height / 2);
-      
+
       // Apply rotation
       ctx.rotate((rotation * Math.PI) / 180);
-      
+
       // Apply flips
       ctx.scale(flipHorizontal ? -1 : 1, flipVertical ? -1 : 1);
-      
+
       // Draw image
       ctx.drawImage(
         img,
         -canvas.width / 2,
         -canvas.height / 2,
         canvas.width,
-        canvas.height
+        canvas.height,
       );
-      
+
       ctx.restore();
 
       // Convert to selected format
@@ -194,18 +200,14 @@ export function ImageFormatPage() {
       }
 
       const blob = await new Promise<Blob | null>((resolve) => {
-        canvas.toBlob(
-          (blob) => resolve(blob),
-          mimeType,
-          qualityParam
-        );
+        canvas.toBlob((blob) => resolve(blob), mimeType, qualityParam);
       });
 
       if (blob) {
         const url = URL.createObjectURL(blob);
         setConvertedImageUrl(url);
         setConvertedImageSize(blob.size);
-        toast.success(`Image converted to ${selectedFormat.toUpperCase()}`);
+        // toast.success(`Image converted to ${selectedFormat.toUpperCase()}`);
       }
     } catch (error) {
       console.error("Image processing error:", error);
@@ -213,7 +215,16 @@ export function ImageFormatPage() {
     } finally {
       setIsProcessing(false);
     }
-  }, [imageUrl, selectedFormat, quality, width, height, rotation, flipHorizontal, flipVertical]);
+  }, [
+    imageUrl,
+    selectedFormat,
+    quality,
+    width,
+    height,
+    rotation,
+    flipHorizontal,
+    flipVertical,
+  ]);
 
   // Handle width change with aspect ratio
   const handleWidthChange = (value: number) => {
@@ -253,16 +264,78 @@ export function ImageFormatPage() {
     try {
       const response = await fetch(convertedImageUrl);
       const blob = await response.blob();
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          [blob.type]: blob,
-        }),
-      ]);
+
+      if (
+        blob.type === "image/webp" ||
+        blob.type === "image/jpeg" ||
+        blob.type === "image/bmp"
+      ) {
+        const convertedBlob = await convertToSupportedImageFormat(blob);
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            "image/png": convertedBlob,
+          }),
+        ]);
+      } else {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            [blob.type]: blob,
+          }),
+        ]);
+      }
+
       toast.success("Image copied to clipboard!");
     } catch (error) {
       console.error("Copy failed:", error);
-      toast.error("Failed to copy image to clipboard");
+      toast.error("Image copy failed!");
     }
+  };
+
+  const convertToSupportedImageFormat = async (
+    webpBlob: Blob,
+  ): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const canvas = document.createElement("canvas");
+
+      img.onload = () => {
+        try {
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            reject(new Error("Canvas context not available"));
+            return;
+          }
+
+          ctx.fillStyle = "#FFFFFF";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.drawImage(img, 0, 0);
+
+          canvas.toBlob(
+            (pngBlob) => {
+              if (pngBlob) {
+                resolve(pngBlob);
+              } else {
+                reject(new Error("Failed to convert to PNG"));
+              }
+            },
+            "image/png",
+            1.0,
+          );
+        } catch (err) {
+          reject(err);
+        }
+      };
+
+      img.onerror = () => {
+        reject(new Error("Failed to load WebP image for conversion"));
+      };
+
+      img.src = URL.createObjectURL(webpBlob);
+    });
   };
 
   // Download image
@@ -308,9 +381,24 @@ export function ImageFormatPage() {
   // Calculate size reduction
   const getSizeReduction = () => {
     if (!originalImageSize || !convertedImageSize) return null;
-    const reduction = ((originalImageSize - convertedImageSize) / originalImageSize) * 100;
+    const reduction =
+      ((originalImageSize - convertedImageSize) / originalImageSize) * 100;
     return reduction > 0 ? reduction.toFixed(1) : "0.0";
   };
+
+  useEffect(() => {
+    if (!imageUrl) return;
+    processImage();
+  }, [
+    imageUrl,
+    selectedFormat,
+    quality,
+    width,
+    height,
+    rotation,
+    flipHorizontal,
+    flipVertical,
+  ]);
 
   return (
     <>
@@ -350,20 +438,20 @@ export function ImageFormatPage() {
                 </Button>
               )}
             </div>
-            
+
             <div
-              className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary transition-colors"
+              className="cursor-pointer rounded-lg border-2 border-dashed p-8 text-center transition-colors hover:border-primary"
               onClick={() => fileInputRef.current?.click()}
             >
-              <ImageIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <p className="text-sm font-medium mb-2">
+              <ImageIcon className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+              <p className="mb-2 text-sm font-medium">
                 {imageUrl ? imageName : "Click to upload image"}
               </p>
               <p className="text-xs text-muted-foreground">
                 PNG, JPEG, WebP, GIF, BMP, AVIF
               </p>
               {originalImageSize > 0 && (
-                <p className="text-xs text-muted-foreground mt-2">
+                <p className="mt-2 text-xs text-muted-foreground">
                   Original size: {formatFileSize(originalImageSize)}
                 </p>
               )}
@@ -396,7 +484,9 @@ export function ImageFormatPage() {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  const input = document.querySelector("input[placeholder*='example.com']") as HTMLInputElement;
+                  const input = document.querySelector(
+                    "input[placeholder*='example.com']",
+                  ) as HTMLInputElement;
                   if (input?.value) {
                     handleImageUrlInput(input.value);
                   }
@@ -430,16 +520,16 @@ export function ImageFormatPage() {
                     </span>
                   )}
                 </div>
-                <div className="border rounded-lg overflow-hidden bg-muted/20">
+                <div className="overflow-hidden rounded-lg border bg-muted/20">
                   <img
                     src={imageUrl}
                     alt="Original"
-                    className="w-full h-auto max-h-64 object-contain"
+                    className="h-auto max-h-64 w-full object-contain"
                     ref={imageRef}
                   />
                 </div>
                 {originalWidth > 0 && originalHeight > 0 && (
-                  <p className="text-xs text-center text-muted-foreground">
+                  <p className="text-center text-xs text-muted-foreground">
                     {originalWidth} × {originalHeight}px
                   </p>
                 )}
@@ -448,35 +538,42 @@ export function ImageFormatPage() {
               {/* Converted Image */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Converted ({selectedFormat.toUpperCase()})</span>
+                  <span className="text-sm font-medium">
+                    Converted ({selectedFormat.toUpperCase()})
+                  </span>
                   {convertedImageSize > 0 && (
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">
                         {formatFileSize(convertedImageSize)}
                       </span>
                       {originalImageSize > 0 && (
-                        <span className={`text-xs ${Number(getSizeReduction()) > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {getSizeReduction()}% {Number(getSizeReduction()) > 0 ? 'smaller' : 'larger'}
+                        <span
+                          className={`text-xs ${Number(getSizeReduction()) > 0 ? "text-green-600" : "text-red-600"}`}
+                        >
+                          {getSizeReduction()}%{" "}
+                          {Number(getSizeReduction()) > 0
+                            ? "smaller"
+                            : "larger"}
                         </span>
                       )}
                     </div>
                   )}
                 </div>
-                <div className="border rounded-lg overflow-hidden bg-muted/20">
+                <div className="overflow-hidden rounded-lg border bg-muted/20">
                   {convertedImageUrl ? (
                     <img
                       src={convertedImageUrl}
                       alt="Converted"
-                      className="w-full h-auto max-h-64 object-contain"
+                      className="h-auto max-h-64 w-full object-contain"
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-64 text-muted-foreground">
+                    <div className="flex h-64 items-center justify-center text-muted-foreground">
                       Converted image will appear here
                     </div>
                   )}
                 </div>
                 {width > 0 && height > 0 && (
-                  <p className="text-xs text-center text-muted-foreground">
+                  <p className="text-center text-xs text-muted-foreground">
                     {width} × {height}px
                   </p>
                 )}
@@ -491,19 +588,21 @@ export function ImageFormatPage() {
                       variant="outline"
                       size="sm"
                       onClick={resetTransformations}
-                      disabled={rotation === 0 && !flipHorizontal && !flipVertical}
+                      disabled={
+                        rotation === 0 && !flipHorizontal && !flipVertical
+                      }
                     >
                       <RefreshCwIcon className="h-4 w-4" />
                     </Button>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <Button
                       variant="outline"
                       onClick={() => setRotation(rotation - 90)}
                       className="w-full"
                     >
-                      <RotateCcwIcon className="h-4 w-4 mr-2" />
+                      <RotateCcwIcon className="mr-2 h-4 w-4" />
                       90° Left
                     </Button>
                     <Button
@@ -511,7 +610,7 @@ export function ImageFormatPage() {
                       onClick={() => setRotation(rotation + 90)}
                       className="w-full"
                     >
-                      <RotateCwIcon className="h-4 w-4 mr-2" />
+                      <RotateCwIcon className="mr-2 h-4 w-4" />
                       90° Right
                     </Button>
                     <Button
@@ -519,7 +618,7 @@ export function ImageFormatPage() {
                       onClick={() => setFlipHorizontal(!flipHorizontal)}
                       className="w-full"
                     >
-                      <FlipHorizontalIcon className="h-4 w-4 mr-2" />
+                      <FlipHorizontalIcon className="mr-2 h-4 w-4" />
                       Flip H
                     </Button>
                     <Button
@@ -527,7 +626,7 @@ export function ImageFormatPage() {
                       onClick={() => setFlipVertical(!flipVertical)}
                       className="w-full"
                     >
-                      <FlipVerticalIcon className="h-4 w-4 mr-2" />
+                      <FlipVerticalIcon className="mr-2 h-4 w-4" />
                       Flip V
                     </Button>
                   </div>
@@ -543,7 +642,7 @@ export function ImageFormatPage() {
                         onClick={copyToClipboard}
                         className="w-full"
                       >
-                        <CopyIcon className="h-4 w-4 mr-2" />
+                        <CopyIcon className="mr-2 h-4 w-4" />
                         Copy
                       </Button>
                       <Button
@@ -551,7 +650,7 @@ export function ImageFormatPage() {
                         onClick={downloadImage}
                         className="w-full"
                       >
-                        <DownloadIcon className="h-4 w-4 mr-2" />
+                        <DownloadIcon className="mr-2 h-4 w-4" />
                         Download
                       </Button>
                     </div>
@@ -573,7 +672,10 @@ export function ImageFormatPage() {
               {/* Format Selection */}
               <div className="space-y-4">
                 <label className="text-sm font-medium">Output Format</label>
-                <Select value={selectedFormat} onValueChange={setSelectedFormat}>
+                <Select
+                  value={selectedFormat}
+                  onValueChange={setSelectedFormat}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -588,7 +690,9 @@ export function ImageFormatPage() {
               </div>
 
               {/* Quality Control */}
-              {(selectedFormat === "jpeg" || selectedFormat === "webp" || selectedFormat === "avif") && (
+              {(selectedFormat === "jpeg" ||
+                selectedFormat === "webp" ||
+                selectedFormat === "avif") && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <label className="text-sm font-medium">Quality</label>
@@ -611,7 +715,9 @@ export function ImageFormatPage() {
                           variant="outline"
                           size="sm"
                           onClick={() => setQuality(preset.value)}
-                          className={quality === preset.value ? "border-primary" : ""}
+                          className={
+                            quality === preset.value ? "border-primary" : ""
+                          }
                         >
                           {preset.label}
                         </Button>
@@ -629,38 +735,50 @@ export function ImageFormatPage() {
                     variant="outline"
                     size="sm"
                     onClick={resetDimensions}
-                    disabled={width === originalWidth && height === originalHeight}
+                    disabled={
+                      width === originalWidth && height === originalHeight
+                    }
                   >
                     Reset
                   </Button>
                 </div>
-                
+
                 <div className="space-y-4">
                   <div className="flex items-center space-x-2">
                     <div className="flex-1 space-y-2">
-                      <label className="text-xs text-muted-foreground">Width (px)</label>
+                      <label className="text-xs text-muted-foreground">
+                        Width (px)
+                      </label>
                       <Input
                         type="number"
                         value={width}
-                        onChange={(e) => handleWidthChange(parseInt(e.target.value) || 0)}
+                        onChange={(e) =>
+                          handleWidthChange(parseInt(e.target.value) || 0)
+                        }
                         min={1}
                         max={10000}
                       />
                     </div>
                     <div className="flex-1 space-y-2">
-                      <label className="text-xs text-muted-foreground">Height (px)</label>
+                      <label className="text-xs text-muted-foreground">
+                        Height (px)
+                      </label>
                       <Input
                         type="number"
                         value={height}
-                        onChange={(e) => handleHeightChange(parseInt(e.target.value) || 0)}
+                        onChange={(e) =>
+                          handleHeightChange(parseInt(e.target.value) || 0)
+                        }
                         min={1}
                         max={10000}
                       />
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium">Maintain Aspect Ratio</label>
+                    <label className="text-sm font-medium">
+                      Maintain Aspect Ratio
+                    </label>
                     <Switch
                       checked={maintainAspectRatio}
                       onCheckedChange={setMaintainAspectRatio}
@@ -668,25 +786,6 @@ export function ImageFormatPage() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Convert Button */}
-            <div className="flex justify-center">
-              <Button
-                size="lg"
-                onClick={processImage}
-                disabled={isProcessing || !imageUrl}
-                className="min-w-40"
-              >
-                {isProcessing ? (
-                  <>
-                    <RefreshCwIcon className="h-4 w-4 mr-2 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  "Convert Image"
-                )}
-              </Button>
             </div>
           </div>
         </>
