@@ -17,6 +17,12 @@ A comprehensive Visual Studio Code extension providing essential developer tools
 • Format Conversion: Convert images between JPG, PNG, WebP, SVG, GIF, BMP formats
 • Quality Optimization: Adjust compression level, DPI settings, and file size
 
+🎨 Color Tools
+
+• Color Format Conversion: Convert between HEX, RGB, HSL, CMYK color formats with real-time preview
+
+• Alpha/Opacity Support: Includes RGBA, HSLA, HEXA formats with opacity slider control
+
 ## Showcase
 
 A few screenshots demonstrating the X Toolbox in action.
@@ -26,6 +32,7 @@ A few screenshots demonstrating the X Toolbox in action.
 </p>
 
 Tools:
+
 <p align="center">
   <img src="./showcase/Screenshot-json-yaml.png" alt="Screenshot: Json-Yaml" width="380" />
   &nbsp;

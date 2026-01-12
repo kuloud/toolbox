@@ -87,6 +87,17 @@ export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem
         collapsibleState: vscode.TreeItemCollapsibleState.Expanded,
         children: [
           {
+            id: "graphics-color-converter",
+            label: "Color",
+            iconPath: getToolIconPath(this.context, "color-symbolic"),
+            contextValue: "tool",
+            command: {
+              command: "toolbox.open",
+              title: "Color",
+              arguments: ["graphics-color-converter"],
+            },
+          },
+          {
             id: "image-converter",
             label: "Image Format Converter",
             iconPath: getToolIconPath(this.context, "image-symbolic"),
