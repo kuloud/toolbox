@@ -12,6 +12,7 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 
 import toast from "@/lib/toast";
+import { vscode } from "@/lib/vscode";
 import {
   CopyIcon,
   DownloadIcon,
@@ -204,8 +205,13 @@ export function ImageFormatPage() {
       });
 
       if (blob) {
-        const url = URL.createObjectURL(blob);
-        setConvertedImageUrl(url);
+        if (vscode.isInVSCode()) {
+          const base64Data = await blobToBase64(blob);
+          setConvertedImageUrl(base64Data);
+        } else {
+          const url = URL.createObjectURL(blob);
+          setConvertedImageUrl(url);
+        }
         setConvertedImageSize(blob.size);
         // toast.success(`Image converted to ${selectedFormat.toUpperCase()}`);
       }
@@ -225,6 +231,18 @@ export function ImageFormatPage() {
     flipHorizontal,
     flipVertical,
   ]);
+
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        resolve(result);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
 
   // Handle width change with aspect ratio
   const handleWidthChange = (value: number) => {
@@ -262,26 +280,59 @@ export function ImageFormatPage() {
     if (!convertedImageUrl) return;
 
     try {
-      const response = await fetch(convertedImageUrl);
-      const blob = await response.blob();
+      // If running inside VS Code, delegate to the extension host for more
+      // reliable handling of base64 data and to work around clipboard
+      // limitations in the webview environment.
+      if (vscode.isInVSCode()) {
+        // If already a data URL, send it directly; otherwise convert to base64
+        if (convertedImageUrl.startsWith("data:")) {
+          vscode.postMessage({
+            command: "copyImage",
+            data: convertedImageUrl,
+            name: `${imageName}.${selectedFormat}`,
+          });
+        } else {
+          // Convert object URL / blob to base64 before sending
+          const resp = await fetch(convertedImageUrl);
+          const blob = await resp.blob();
+          const base64 = await blobToBase64(blob);
+          vscode.postMessage({
+            command: "copyImage",
+            data: base64,
+            name: `${imageName}.${selectedFormat}`,
+          });
+        }
 
-      if (
-        blob.type === "image/webp" ||
-        blob.type === "image/jpeg" ||
-        blob.type === "image/bmp"
-      ) {
-        const convertedBlob = await convertToSupportedImageFormat(blob);
+        toast.success("Image copy requested (VS Code)");
+        return;
+      }
+
+      // Browser fallback: use the clipboard API with Blob/ClipboardItem
+      if (convertedImageUrl.startsWith("data:")) {
+        // Convert data URL to Blob
+        const res = await fetch(convertedImageUrl);
+        const blob = await res.blob();
         await navigator.clipboard.write([
-          new ClipboardItem({
-            "image/png": convertedBlob,
-          }),
+          new ClipboardItem({ [blob.type]: blob }),
         ]);
       } else {
-        await navigator.clipboard.write([
-          new ClipboardItem({
-            [blob.type]: blob,
-          }),
-        ]);
+        const resp = await fetch(convertedImageUrl);
+        const blob = await resp.blob();
+
+        if (
+          blob.type === "image/webp" ||
+          blob.type === "image/jpeg" ||
+          blob.type === "image/bmp"
+        ) {
+          const convertedBlob = await convertToSupportedImageFormat(blob);
+          await navigator.clipboard.write([
+            new ClipboardItem({ "image/png": convertedBlob }),
+          ]);
+        } else {
+          await navigator.clipboard.write([
+            new ClipboardItem({ [blob.type]: blob }),
+          ]);
+        }
       }
 
       toast.success("Image copied to clipboard!");
@@ -339,8 +390,33 @@ export function ImageFormatPage() {
   };
 
   // Download image
-  const downloadImage = () => {
+  const downloadImage = async () => {
     if (!convertedImageUrl) return;
+
+    // In VS Code we send the base64/data URL to the extension which can show
+    // a save dialog and write the file using the extension API—this is more
+    // reliable than trying to trigger a download from the webview.
+    if (vscode.isInVSCode()) {
+      if (convertedImageUrl.startsWith("data:")) {
+        vscode.postMessage({
+          command: "saveImage",
+          data: convertedImageUrl,
+          name: `${imageName}.${selectedFormat}`,
+        });
+      } else {
+        const resp = await fetch(convertedImageUrl);
+        const blob = await resp.blob();
+        const base64 = await blobToBase64(blob);
+        vscode.postMessage({
+          command: "saveImage",
+          data: base64,
+          name: `${imageName}.${selectedFormat}`,
+        });
+      }
+
+      toast.success("Save image requested (VS Code)");
+      return;
+    }
 
     const link = document.createElement("a");
     link.href = convertedImageUrl;

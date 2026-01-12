@@ -1,11 +1,13 @@
 import {
   ColorThemeKind,
   Disposable,
+  env,
   Uri,
   ViewColumn,
   Webview,
   WebviewPanel,
   window,
+  workspace,
 } from "vscode";
 import { getNonce } from "../utils/nonce";
 import { getUri } from "../utils/uri";
@@ -206,7 +208,7 @@ export class ToolboxPanel {
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} data: https:; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src ${webview.cspSource} blob: data: vscode-webview:; img-src ${webview.cspSource} data: https:; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
           <link rel="stylesheet" type="text/css" href="${stylesUri}">
           <title>Dev Toolbox</title>
         </head>
@@ -246,6 +248,55 @@ export class ToolboxPanel {
           case "getTheme":
             this._updateTheme();
             break;
+
+          // Save image (base64 or data URL) to user-chosen location
+          case "saveImage": {
+            (async () => {
+              try {
+                const base64 = message.data as string;
+                const name = (message.name as string) || "image.png";
+
+                // Prompt user for filename/location
+                const uri = await window.showSaveDialog({
+                  defaultUri: Uri.file(name),
+                  filters: { Images: [name.split(".").pop() || "png"] },
+                });
+
+                if (!uri) {
+                  return;
+                }
+
+                // Strip data URL prefix if present
+                const commaIndex = base64.indexOf(",");
+                const raw =
+                  commaIndex >= 0 ? base64.slice(commaIndex + 1) : base64;
+                const buffer = Buffer.from(raw, "base64");
+
+                await workspace.fs.writeFile(uri, Uint8Array.from(buffer));
+                window.showInformationMessage(`Image saved to ${uri.fsPath}`);
+              } catch (err) {
+                console.error("Failed to save image from webview:", err);
+                window.showErrorMessage("Failed to save image");
+              }
+            })();
+            break;
+          }
+
+          // Copy image data URL/base64 into the clipboard as text (best-effort)
+          case "copyImage": {
+            (async () => {
+              try {
+                const data = message.data as string;
+                // Write the base64/data URL to VS Code clipboard as text
+                await env.clipboard.writeText(data);
+                window.showInformationMessage("Image data copied to clipboard");
+              } catch (err) {
+                console.error("Failed to copy image from webview:", err);
+                window.showErrorMessage("Failed to copy image");
+              }
+            })();
+            break;
+          }
         }
       },
       undefined,
