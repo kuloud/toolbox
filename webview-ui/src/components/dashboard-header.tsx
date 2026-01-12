@@ -37,7 +37,7 @@ export function DashboardHeader() {
               <Terminal className="h-5 w-5 text-primary" />
             </div>
             <span className="text-lg font-semibold text-foreground">
-              Dev Toolbox
+              X Toolbox
             </span>
           </div>
 
@@ -67,7 +67,7 @@ export function DashboardHeader() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-foreground">
-                        Support Dev Toolbox
+                        Support X Toolbox
                       </h3>
                       <p className="text-xs text-muted-foreground">
                         Your support helps improve the project
