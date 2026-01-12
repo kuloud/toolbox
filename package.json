@@ -2,7 +2,7 @@
   "name": "kuloud-toolbox",
   "displayName": "X Toolbox",
   "description": "All-in-one development toolkit with converters, formatters, encoders, generators and more",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "kuloud",
   "author": {
     "name": "kuloud"
@@ -34,7 +34,7 @@
     "commands": [
       {
         "command": "toolbox.open",
-        "title": "Open Dev Toolbox",
+        "title": "Open X Toolbox",
         "icon": "media/icons/activitybar/toolbox.svg"
       }
     ],
@@ -42,7 +42,7 @@
       "activitybar": [
         {
           "id": "toolbox",
-          "title": "Dev Toolbox",
+          "title": "X Toolbox",
           "icon": "media/icons/activitybar/toolbox.svg"
         }
       ]

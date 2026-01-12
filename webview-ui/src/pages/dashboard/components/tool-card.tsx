@@ -32,7 +32,7 @@ export function ToolCard({ tool }: ToolCardProps) {
       className={`group cursor-pointer border-border bg-card transition-all duration-300 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5`}
       onClick={handleToolOpen}
     >
-      <CardContent className="p-5">
+      <CardContent className="px-4">
         <div className="flex flex-col gap-4">
           <div
             className={`flex h-11 w-11 items-center justify-center rounded-lg ${tool.bgColor} border ${tool.borderColor}`}

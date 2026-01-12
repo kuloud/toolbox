@@ -90,7 +90,7 @@ export class ToolboxPanel {
         // Panel view type
         "open",
         // Panel title
-        "Dev Toolbox",
+        "X Toolbox",
         // The editor column the panel should be displayed in
         ViewColumn.One,
         // Extra panel configurations
@@ -208,9 +208,9 @@ export class ToolboxPanel {
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; connect-src ${webview.cspSource} blob: data: vscode-webview:; img-src ${webview.cspSource} data: https:; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+          <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} data: https:; style-src ${webview.cspSource}; script-src 'nonce-${nonce}' ${webview.cspSource};">
           <link rel="stylesheet" type="text/css" href="${stylesUri}">
-          <title>Dev Toolbox</title>
+          <title>X Toolbox</title>
         </head>
         <body>
           <div id="root"></div>

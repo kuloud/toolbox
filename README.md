@@ -1,4 +1,4 @@
-# Dev Toolbox
+# X Toolbox
 
 A comprehensive Visual Studio Code extension providing essential developer tools directly within your editor. Streamline your workflow with built-in utilities for format conversion, time formatting, encoding/decoding, and more - all without leaving your coding environment.
 
@@ -19,7 +19,7 @@ A comprehensive Visual Studio Code extension providing essential developer tools
 
 ## Showcase
 
-A few screenshots demonstrating the Dev Toolbox in action.
+A few screenshots demonstrating the X Toolbox in action.
 
 <p align="center">
   <img src="./showcase/Screenshot-dashboard.png" alt="Screenshot: Dashboard" width="800" />
@@ -42,7 +42,7 @@ Access all tools through the Command Palette (Ctrl+Shift+P or Cmd+Shift+P):
 
 Command Description
 
-`Open Dev Toolbox` Open the main toolbox interface
+`Open X Toolbox` Open the main toolbox interface
 
 ## License
 
@@ -52,4 +52,4 @@ This is proprietary software owned by the project maintainers. No part of this s
 
 For licensing inquiries, please contact: [kuloud@outlook.com](mailto:kuloud@outlook.com)
 
-Enhance your development workflow with Dev Toolbox - because great developers deserve great tools! 🚀
+Enhance your development workflow with X Toolbox - because great developers deserve great tools! 🚀
