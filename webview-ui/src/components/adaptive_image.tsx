@@ -18,7 +18,6 @@ export function AdaptiveImage({
 
   useEffect(() => {
     const imageUri = getImageUri(src);
-    console.log("--->", { imageUri });
     setActualSrc(imageUri);
   }, [src]);
 

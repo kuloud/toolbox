@@ -52,7 +52,14 @@ export function DashboardHeader() {
                   <Heart stroke="red" fill="red" />
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-72" align="end">
+              <PopoverContent
+                className="w-72"
+                align="end"
+                style={{
+                  maxHeight: "min(calc(100vh - 100px), 800px)",
+                  overflowY: "auto",
+                }}
+              >
                 <div className="space-y-4">
                   {/* Title */}
                   <div className="flex items-center gap-3">
