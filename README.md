@@ -8,17 +8,29 @@ A comprehensive Visual Studio Code extension providing essential developer tools
 
 • JSON ↔ YAML: Seamlessly convert between JSON and YAML formats
 
-
 ⏰ Time Utilities
 
 • Timestamp Conversion: Convert between Unix timestamps and human-readable dates
-
 
 🖼️ Image Processing
 
 • Format Conversion: Convert images between JPG, PNG, WebP, SVG, GIF, BMP formats
 • Quality Optimization: Adjust compression level, DPI settings, and file size
 
+## Showcase
+
+A few screenshots demonstrating the Dev Toolbox in action.
+
+<p align="center">
+  <img src="./showcase/Screenshot-dashboard.png" alt="Screenshot: Dashboard" width="800" />
+</p>
+
+Tools:
+<p align="center">
+  <img src="./showcase/Screenshot-json-yaml.png" alt="Screenshot: Json-Yaml" width="380" />
+  &nbsp;
+  <img src="./showcase/Screenshot-tools-image-converter.png" alt="Screenshot: Image Converter" width="380" />
+</p>
 
 ## Requirements
 

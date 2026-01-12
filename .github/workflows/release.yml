@@ -171,7 +171,7 @@ jobs:
           rm -rf webview-ui/node_modules || true
 
           # Create vsix artifact using @vscode/vsce (preferred over deprecated vsce)
-          npx --yes @vscode/vsce package --no-dependencies -o extension.vsix
+          npx --yes @vscode/vsce package -o extension.vsix
 
       - name: Create GitHub Release
         if: steps.detect.outputs.changed == 'true'
@@ -223,4 +223,4 @@ jobs:
           rm -rf webview-ui/node_modules || true
 
           # Publish using @vscode/vsce via npx (preferred to deprecated vsce)
-          npx --yes @vscode/vsce publish --pat "${VSCE_TOKEN}" --no-dependencies
+          npx --yes @vscode/vsce publish --pat "${VSCE_TOKEN}"
