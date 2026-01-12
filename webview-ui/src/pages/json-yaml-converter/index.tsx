@@ -1,10 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
@@ -191,8 +187,8 @@ export function JsonYamlPage() {
               Number of spaces used for formatting output
             </div>
           </div>
-          <InputGroup className="w-fit border-none shadow-none outline-none">
-            <InputGroupInput
+          <ButtonGroup>
+            <Input
               type="number"
               min="1"
               max="8"
@@ -200,27 +196,23 @@ export function JsonYamlPage() {
               onChange={(e) =>
                 setIndentation(Math.max(1, Math.min(8, Number(e.target.value))))
               }
-              className="[appearance:textfield] border-0 focus:ring-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
             />
-            <InputGroupAddon align="inline-end" className="p-0">
-              <ButtonGroup className="w-fit">
-                <Button
-                  variant="outline"
-                  onClick={decreaseIndentation}
-                  disabled={indentation <= 1}
-                >
-                  <MinusIcon />
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={increaseIndentation}
-                  disabled={indentation >= 8}
-                >
-                  <PlusIcon />
-                </Button>
-              </ButtonGroup>
-            </InputGroupAddon>
-          </InputGroup>
+            <Button
+              variant="outline"
+              onClick={decreaseIndentation}
+              disabled={indentation <= 1}
+            >
+              <MinusIcon />
+            </Button>
+            <Button
+              variant="outline"
+              onClick={increaseIndentation}
+              disabled={indentation >= 8}
+            >
+              <PlusIcon />
+            </Button>
+          </ButtonGroup>
         </div>
       </div>
 
