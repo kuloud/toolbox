@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.0.7] - 2026-01-12
+
+### Added
+
+- Image converter
+- Landing page, add sponsor links
+
 ## [0.0.6] - 2026-01-08
 
 ### Added
