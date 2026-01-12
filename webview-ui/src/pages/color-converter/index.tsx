@@ -698,7 +698,7 @@ RGBA: ${colorValues.rgba}
 HSL: ${colorValues.hsl}
 HSLA: ${colorValues.hsla}
 CMYK: ${colorValues.cmyk}
-Alpha: ${colorValues.alpha.toFixed(3)}
+Alpha: ${colorValues.alpha.toFixed(2)}
 
 Generated at: ${new Date().toISOString()}`;
 

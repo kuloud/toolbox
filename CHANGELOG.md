@@ -1,8 +1,14 @@
 # Change Log
 
-## [Unreleased]
+## [0.0.9] - 2026-01-12
 
-- Color Converter(TBD)
+### Added
+
+- Color Converter
+
+### Fixed
+
+- CSP error for vscode extension
 
 ## [0.0.8] - 2026-01-12
 
