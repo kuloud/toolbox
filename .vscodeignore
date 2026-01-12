@@ -1,6 +1,9 @@
 .vscode/**
 .vscode-test/**
 out/**
+!out/assets/**
+!out/*.js
+!out/*.css
 node_modules/**
 **/node_modules/**
 /webview-ui/node_modules/**
