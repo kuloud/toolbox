@@ -28,15 +28,18 @@ A comprehensive Visual Studio Code extension providing essential developer tools
 A few screenshots demonstrating the X Toolbox in action.
 
 <p align="center">
-  <img src="./showcase/Screenshot-dashboard.png" alt="Screenshot: Dashboard" width="800" />
+  <img src="./showcase/Screenshot-dashboard.png" alt="Dashboard" width="380" />
+    &nbsp;
+  <img src="showcase/Screenshot-darkmode.png" alt="Darkmode" width="380" />
 </p>
 
 Tools:
 
 <p align="center">
-  <img src="./showcase/Screenshot-json-yaml.png" alt="Screenshot: Json-Yaml" width="380" />
+  <img src="./showcase/Screenshot-json-yaml.png" alt="Json-Yaml" width="380" />
   &nbsp;
-  <img src="./showcase/Screenshot-tools-image-converter.png" alt="Screenshot: Image Converter" width="380" />
+  <img src="./showcase/Screenshot-tools-image-converter.png" alt="Image Converter" width="380" />
+
 </p>
 
 ## Requirements
