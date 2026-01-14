@@ -7,6 +7,7 @@ import { DashboardHeader } from "./components/dashboard-header";
 import { ImageFormatPage } from "./pages/image-converter";
 import { JsonYamlPage } from "./pages/json-yaml-converter";
 import { TimestampPage } from "./pages/timestamp-converter";
+import UuidGeneratorPage from "./pages/uuid-generator";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { GraphicsColorConverterPage } from "./pages/color-converter";
 
@@ -35,6 +36,7 @@ function App() {
         <Route path="/view/image-converter" element={<ImageFormatPage />} />
         <Route path="/view/json-yaml" element={<JsonYamlPage />} />
         <Route path="/view/timestamp" element={<TimestampPage />} />
+        <Route path="/view/uuid-generator" element={<UuidGeneratorPage />} />
       </Route>
     </Routes>
   );
