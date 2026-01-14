@@ -1,5 +1,14 @@
 # X Toolbox
 
+<p align="left">
+  <a href="https://github.com/kuloud/toolbox/actions/workflows/release.yml">
+    <img src="https://github.com/kuloud/toolbox/actions/workflows/release.yml/badge.svg?branch=main" alt="GitHub deployments">
+  </a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=kuloud.kuloud-toolbox">
+    <img src="https://img.shields.io/visual-studio-marketplace/d/kuloud.kuloud-toolbox.svg" alt="Marketplace">
+  </a>
+</p>
+
 A comprehensive Visual Studio Code extension providing essential developer tools directly within your editor. Streamline your workflow with built-in utilities for format conversion, time formatting, encoding/decoding, and more - all without leaving your coding environment.
 
 ## Features
