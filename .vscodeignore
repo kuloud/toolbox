@@ -6,9 +6,9 @@ out/**
 !out/*.css
 node_modules/**
 **/node_modules/**
-/webview-ui/node_modules/**
+webview-ui/**
 src/**
-.gitignore
+**/*.gitignore
 .yarnrc
 webpack.config.js
 vsc-extension-quickstart.md
@@ -17,3 +17,7 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+.github/**
+
+scripts
+showcase

@@ -87,6 +87,17 @@ export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem
         collapsibleState: vscode.TreeItemCollapsibleState.Expanded,
         children: [
           {
+            id: "graphics-color-converter",
+            label: "Color",
+            iconPath: getToolIconPath(this.context, "color-symbolic"),
+            contextValue: "tool",
+            command: {
+              command: "toolbox.open",
+              title: "Color",
+              arguments: ["graphics-color-converter"],
+            },
+          },
+          {
             id: "image-converter",
             label: "Image Format Converter",
             iconPath: getToolIconPath(this.context, "image-symbolic"),
@@ -95,6 +106,25 @@ export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem
               command: "toolbox.open",
               title: "JSON - YAML",
               arguments: ["image-converter"],
+            },
+          },
+        ],
+      },
+      {
+        id: "generators",
+        label: "Generators",
+        contextValue: "category",
+        collapsibleState: vscode.TreeItemCollapsibleState.Expanded,
+        children: [
+          {
+            id: "generators-uuid",
+            label: "UUID",
+            iconPath: getToolIconPath(this.context, "fingerprint"),
+            contextValue: "tool",
+            command: {
+              command: "toolbox.open",
+              title: "UUID",
+              arguments: ["generators-uuid"],
             },
           },
         ],

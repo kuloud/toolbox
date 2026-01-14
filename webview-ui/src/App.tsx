@@ -1,14 +1,15 @@
 import { Outlet, Route, Routes } from "react-router-dom";
 
 import { Provider as JotaiProvider } from "jotai";
-import { Toaster } from "./components/ui/sonner";
-import DashboardPage from "./pages/dashboard";
 import { DashboardHeader } from "./components/dashboard-header";
+import { Toaster } from "./components/ui/sonner";
+import { GraphicsColorConverterPage } from "./pages/color-converter";
+import DashboardPage from "./pages/dashboard";
 import { ImageFormatPage } from "./pages/image-converter";
 import { JsonYamlPage } from "./pages/json-yaml-converter";
 import { TimestampPage } from "./pages/timestamp-converter";
+import UuidGeneratorPage from "./pages/uuid-generator";
 import { ThemeProvider } from "./providers/ThemeProvider";
-import { GraphicsColorConverterPage } from "./pages/color-converter";
 
 const Layout = () => {
   return (
@@ -31,10 +32,14 @@ function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<DashboardPage />} />
-        <Route path="/view/graphics-color-converter" element={<GraphicsColorConverterPage />} />
+        <Route
+          path="/view/graphics-color-converter"
+          element={<GraphicsColorConverterPage />}
+        />
         <Route path="/view/image-converter" element={<ImageFormatPage />} />
         <Route path="/view/json-yaml" element={<JsonYamlPage />} />
         <Route path="/view/timestamp" element={<TimestampPage />} />
+        <Route path="/view/generators-uuid" element={<UuidGeneratorPage />} />
       </Route>
     </Routes>
   );
