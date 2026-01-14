@@ -1,4 +1,4 @@
-import { Braces, Image, Palette, Timer } from "lucide-react";
+import { Braces, Image, Palette, Timer, Key } from "lucide-react";
 
 export const tools = [
   {
@@ -41,6 +41,16 @@ export const tools = [
     color: "text-pink-400",
     bgColor: "bg-pink-400/10",
     borderColor: "border-pink-400/20",
+  },
+  {
+    id: "uuid-generator",
+    name: "UUID Generator",
+    description: "Generate RFC-compliant UUIDs (v4) for identifiers and testing",
+    icon: Key,
+    category: "formatting",
+    color: "text-violet-400",
+    bgColor: "bg-violet-400/10",
+    borderColor: "border-violet-400/20",
   },
 ];
 
