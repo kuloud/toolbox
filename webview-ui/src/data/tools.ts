@@ -1,4 +1,4 @@
-import { Braces, Image, Key, Palette, Timer } from "lucide-react";
+import { Braces, Globe, Image, Key, Palette, Timer } from "lucide-react";
 
 export const tools = [
   {
@@ -11,6 +11,16 @@ export const tools = [
     color: "text-emerald-400",
     bgColor: "bg-emerald-400/10",
     borderColor: "border-emerald-400/20",
+  },
+  {
+    id: "translator",
+    name: "Translator",
+    description: "Quickly translate text between languages",
+    icon: Globe,
+    category: "formatting",
+    color: "text-sky-400",
+    bgColor: "bg-sky-400/10",
+    borderColor: "border-sky-400/20",
   },
   {
     id: "timestamp",
