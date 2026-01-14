@@ -110,6 +110,25 @@ export class ToolboxTreeDataProvider implements vscode.TreeDataProvider<ToolItem
           },
         ],
       },
+      {
+        id: "generators",
+        label: "Generators",
+        contextValue: "category",
+        collapsibleState: vscode.TreeItemCollapsibleState.Expanded,
+        children: [
+          {
+            id: "generators-uuid",
+            label: "UUID",
+            iconPath: getToolIconPath(this.context, "fingerprint"),
+            contextValue: "tool",
+            command: {
+              command: "toolbox.open",
+              title: "UUID",
+              arguments: ["generators-uuid"],
+            },
+          },
+        ],
+      },
     ];
   }
 }

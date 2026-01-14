@@ -1,10 +1,16 @@
 # Change Log
 
+## [0.0.11] - 2026-01-14
+
+### Added
+
+- `UUID Generator`
+
 ## [0.0.10] - 2026-01-12
 
 ### Fixed
 
-- vscode ignore webview files 
+- vscode ignore webview files
 
 ## [0.0.9] - 2026-01-12
 
