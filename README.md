@@ -1,6 +1,9 @@
 # X Toolbox
 
 <p align="left">
+  <a href="https://github.com/kuloud/toolbox/releases">
+    <img src="https://img.shields.io/github/release/kuloud/toolbox" alt="Latest release version">
+  </a>
   <a href="https://github.com/kuloud/toolbox/actions/workflows/release.yml">
     <img src="https://github.com/kuloud/toolbox/actions/workflows/release.yml/badge.svg?branch=main" alt="GitHub deployments">
   </a>
